@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books</title>
+</head>
+<body>
+<h1>Books List</h1>
+<h1>Search for Books</h1>
+
+<form action="/search" method="get">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title">
+    <br>
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author">
+    <br>
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="isbn">
+    <br>
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Copies Available</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.copiesAvailable}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<div>
+    <a th:if="${currentPage > 0}"
+       th:href="@{/books(page=${currentPage - 1}, size=5)}">Previous</a>
+    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/books(page=${currentPage + 1}, size=5)}">Next</a>
+</div>
+
+</body>
+</html>
