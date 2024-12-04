@@ -1,27 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Books</title>
+    <title>Manage Books</title>
 </head>
 <body>
-<h1>Books List</h1>
-<h1>Search for Books</h1>
-
-<form action="/search" method="get">
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title">
-    <br>
-    <label for="author">Author:</label>
-    <input type="text" id="author" name="author">
-    <br>
-    <label for="isbn">ISBN:</label>
-    <input type="text" id="isbn" name="isbn">
-    <br>
-    <button type="submit">Search</button>
-</form>
-
-<br>
-
+<h1>Manage Books</h1>
+<a href="/admin/books/add">Add New Book</a>
 <table border="1">
     <thead>
     <tr>
@@ -39,18 +23,21 @@
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.copiesAvailable}"></td>
         <td th:text="${book.description}"></td>
+        <td>
+            <a th:href="@{/admin/books/edit/{id}(id=${book.id})}">Edit</a>
+            <a th:href="@{/admin/books/delete/{id}(id=${book.id})}">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>
 
-<!-- Pagination controls -->
+<!-- Pagination Controls -->
 <div>
     <a th:if="${currentPage > 0}"
-       th:href="@{/books(page=${currentPage - 1}, size=5)}">Previous</a>
+       th:href="@{/admin/books(page=${currentPage - 1}, size=5)}">Previous</a>
     <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
     <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/books(page=${currentPage + 1}, size=5)}">Next</a>
+       th:href="@{/admin/books(page=${currentPage + 1}, size=5)}">Next</a>
 </div>
-
 </body>
 </html>

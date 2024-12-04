@@ -1,5 +1,8 @@
 package kadri.Digital.Library.Management.System.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "books")
@@ -10,18 +13,26 @@ public class Book {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title must not exceed 255 characters")
     private String title;
 
     @Column(nullable = false)
+    @NotBlank(message = "Author is required")
+    @Size(max = 255, message = "Author must not exceed 255 characters")
     private String author;
 
     @Column
+    @Size(max = 1000, message = "Description must not exceed 1000 characters")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "ISBN is required")
+    @Size(max = 13, message = "ISBN must not exceed 13 characters")
     private String isbn;
 
     @Column
+    @Min(value = 0, message = "Copies available must be 0 or more")
     private int copiesAvailable;
 
     // Constructors, Getters, and Setters

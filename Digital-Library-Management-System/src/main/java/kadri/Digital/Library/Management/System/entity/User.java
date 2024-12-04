@@ -2,35 +2,26 @@ package kadri.Digital.Library.Management.System.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
+    private String username;
     private String name;
+    private String avatarUrl;
+    private String role;
 
-    @Column
-    private String password; // سيتم استخدامه لاحقاً في تسجيل الدخول
-
-    @Column
-    private String role; // ROLE_USER أو ROLE_ADMIN
-
-    // Constructors, Getters, and Setters
     public User() {}
 
-    public User(String email, String name, String password, String role) {
-        this.email = email;
+    public User(String username, String name, String avatarUrl, String role) {
+        this.username = username;
         this.name = name;
-        this.password = password;
+        this.avatarUrl = avatarUrl;
         this.role = role;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -39,12 +30,12 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
@@ -55,12 +46,12 @@ public class User {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getRole() {

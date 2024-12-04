@@ -14,6 +14,10 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+    @GetMapping("/")
+    public String homePage(){
+        return "home";
+    }
 
     // عرض الكتب مع Pagination
     @GetMapping("/books")
