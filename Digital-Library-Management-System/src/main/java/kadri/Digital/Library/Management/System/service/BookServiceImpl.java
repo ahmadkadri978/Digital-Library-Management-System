@@ -70,5 +70,29 @@ public class BookServiceImpl implements BookService {
         if (book.isPresent()) bookRepository.deleteById(id);
     }
 
+    @Override
+    public boolean isBookAvailableForReservation(Long bookId) {
+        Book book = findBookById(bookId);
+        return book.getCopiesAvailable() > 0 ;
+    }
+
+    @Override
+    public void updateBookReservationStatus(Long bookId, boolean reserved) {
+        Book book = findBookById(bookId);
+        if (reserved) {
+            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+        } else {
+            book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+        }
+        bookRepository.save(book);
+
+    }
+
+    @Override
+    public Book findBookById(Long bookId) {
+        Optional<Book> book = bookRepository.findById(bookId);
+        return book.get();
+    }
+
 
 }

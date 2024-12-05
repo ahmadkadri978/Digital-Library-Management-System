@@ -34,7 +34,6 @@ public class Book {
     @Column
     @Min(value = 0, message = "Copies available must be 0 or more")
     private int copiesAvailable;
-
     // Constructors, Getters, and Setters
     public Book() {}
 
@@ -93,5 +92,6 @@ public class Book {
     public void setCopiesAvailable(int copiesAvailable) {
         this.copiesAvailable = copiesAvailable;
     }
+
 }
 

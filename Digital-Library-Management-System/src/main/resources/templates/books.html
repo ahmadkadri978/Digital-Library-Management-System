@@ -30,6 +30,7 @@
         <th>ISBN</th>
         <th>Copies Available</th>
         <th>Description</th>
+        <th>Reservation</th>
     </tr>
     </thead>
     <tbody>
@@ -39,6 +40,13 @@
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.copiesAvailable}"></td>
         <td th:text="${book.description}"></td>
+        <td>
+            <form th:if="${book.copiesAvailable > 0}" th:action="@{/reservations/add}" method="post">
+                <input type="hidden" name="bookId" th:value="${book.id}">
+                <button type="submit">Reserve</button>
+            </form>
+            <span th:if="${book.copiesAvailable == 0}">Not Available</span>
+        </td>
     </tr>
     </tbody>
 </table>
