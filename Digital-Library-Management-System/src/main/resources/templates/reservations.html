@@ -6,6 +6,8 @@
 </head>
 <body>
 <h1>My Reservations</h1>
+<p th:text="${#authentication.authorities}">Authorities</p>
+
 <table>
     <thead>
     <tr>
@@ -16,12 +18,19 @@
     </tr>
     </thead>
     <tbody>
+
     <tr th:each="reservation : ${reservations}">
         <td th:text="${reservation.book.title}"></td>
         <td th:text="${reservation.reservationDate}"></td>
         <td th:text="${reservation.status}"></td>
         <td>
-            <form th:action="@{/reservation/cancel}" method="post">
+            <form th:if="${#authentication.authorities.?[toString() == 'ROLE_USER'].size() > 0 && #authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() == 0}"
+                  th:action="@{/reservations/cancel}" method="post">
+                <input type="hidden" name="reservationId" th:value="${reservation.id}">
+                <button type="submit" th:if="${reservation.status == 'ACTIVE'}">Cancel</button>
+            </form>
+            <form th:if="${#authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() > 0}"
+                  th:action="@{/admin/user/{userId}/reservations/cancel(userId=${reservation.user.id})}" method="post">
                 <input type="hidden" name="reservationId" th:value="${reservation.id}">
                 <button type="submit" th:if="${reservation.status == 'ACTIVE'}">Cancel</button>
             </form>

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ReservationServiceImpl implements ReservationService{
     @Autowired
@@ -37,7 +39,13 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setBook(book);
         reservation.setReservationDate(LocalDateTime.now());
         reservation.setStatus("ACTIVE");
+        if (reservationRepository.countByUserId(userId) == 0) {
+            user.setReservation("ACTIVE");
+            userRepository.save(user);
+        }
         reservationRepository.save(reservation);
+
+
         bookService.updateBookReservationStatus(reservation.getBook().getId(), true);
 
     }
@@ -48,6 +56,12 @@ public class ReservationServiceImpl implements ReservationService{
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
         reservation.setStatus("CANCELED");
         reservationRepository.save(reservation);
+
+        Optional<User> user = userRepository.findById(reservation.getUser().getId());
+        if (reservationRepository.countByUserId(user.get().getId()) == 0) {
+            user.get().setReservation("INACTIVE");
+            userRepository.save(user.get());
+        }
 
         bookService.updateBookReservationStatus(reservation.getBook().getId(), false);
 

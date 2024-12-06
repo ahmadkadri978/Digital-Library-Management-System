@@ -1,6 +1,8 @@
 package kadri.Digital.Library.Management.System.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -11,9 +13,11 @@ public class Reservation {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
     @ManyToOne
     @JoinColumn(name="book_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Book book;
     @Column(nullable = false)
     private LocalDateTime reservationDate;

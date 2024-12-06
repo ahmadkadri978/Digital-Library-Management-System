@@ -10,6 +10,7 @@ public class User {
     private String username;
     private String name;
     private String avatarUrl;
+    private String  reservation;
     private String role;
 
     public User() {}
@@ -60,6 +61,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(String reservation) {
+        this.reservation = reservation;
     }
 }
 

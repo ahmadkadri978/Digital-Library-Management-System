@@ -38,6 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isEmpty()) {
             // إذا كان المستخدم جديدًا، قم بإنشائه بدور USER
             user = new User(username, name, avatarUrl, "USER");
+            user.setReservation("INACTIVE");
             userRepository.save(user);
         } else {
             user = userOptional.get();
