@@ -1,0 +1,43 @@
+package kadri.Digital.Library.Management.System.exception;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(BookNotFoundException.class)
+    public String handleBookNotFoundException(BookNotFoundException ex, Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error/book-not-found";
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public String handleUserNotFoundException(UserNotFoundException ex, Model model){
+        model.addAttribute("error", ex.getMessage());
+        return "error/user-not-found";
+    }
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public String handleReservationNotFoundException(ReservationNotFoundException ex, Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error/reservation-not-found"; // صفحة خطأ مخصصة
+    }
+
+    @ExceptionHandler(BookNotAvailableException.class)
+    public String handleBookNotAvailableException(BookNotAvailableException ex, Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error/book-not-available"; // صفحة خطأ مخصصة
+    }
+
+    @ExceptionHandler(DuplicateReservationException.class)
+    public String handleDuplicateReservationException(DuplicateReservationException ex, Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error/duplicate-reservation"; // صفحة خطأ مخصصة
+    }
+    @ExceptionHandler(Exception.class)
+    public String handleGeneralException(Exception ex,  Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error/general-error";
+    }
+
+
+}

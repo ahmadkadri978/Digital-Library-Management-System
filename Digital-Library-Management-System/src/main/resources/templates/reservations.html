@@ -38,5 +38,7 @@
     </tr>
     </tbody>
 </table>
+<a th:if="${#authentication.authorities.?[toString() == 'ROLE_USER'].size() > 0 && #authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() == 0}" th:href="@{/Digital Library/books}">books</a>
+<a th:if="${#authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() > 0}" th:href="@{/admin/users}">users</a>
 </body>
 </html>

@@ -5,9 +5,13 @@
 </head>
 <body>
 <h1>Books List</h1>
+<div>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/reservations}">show reservations</a>
+<a  th:href="@{/profile}">profile</a>
+</div>
 <h1>Search for Books</h1>
 
-<form action="/search" method="get">
+<form action="/Digital Library/search" method="get">
     <label for="title">Title:</label>
     <input type="text" id="title" name="title">
     <br>
@@ -59,6 +63,8 @@
     <a th:if="${currentPage + 1 < totalPages}"
        th:href="@{/books(page=${currentPage + 1}, size=5)}">Next</a>
 </div>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/reservations}">show reservations</a>
+<a  th:href="@{/profile}">profile</a>
 
 </body>
 </html>

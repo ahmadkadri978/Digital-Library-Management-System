@@ -1,6 +1,7 @@
 package kadri.Digital.Library.Management.System.service;
 
 import kadri.Digital.Library.Management.System.entity.Book;
+import kadri.Digital.Library.Management.System.exception.BookNotFoundException;
 import kadri.Digital.Library.Management.System.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,40 +46,38 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBookById(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if(book.isPresent())
-        return book.get();
-        else return null;
+        Book book = bookRepository.findById(id)
+                .orElseThrow(()->new BookNotFoundException("Book with ID" + id + "not found."));
+        return book;
+
     }
 
     @Override
     public void updateBook(Long id, Book book) {
-        Optional<Book> updateBook = bookRepository.findById(id);
-        if(updateBook.isPresent())
-        {
-            updateBook.get().setTitle(book.getTitle());
-            updateBook.get().setAuthor(book.getAuthor());
-            updateBook.get().setDescription(book.getDescription());
-            bookRepository.save(updateBook.get());
-
-        }
+        Book existingBook = getBookById(id);
+        existingBook.setTitle(book.getTitle());
+        existingBook.setAuthor(book.getAuthor());
+        existingBook.setDescription(book.getDescription());
+        bookRepository.save(existingBook);
     }
 
     @Override
     public void deleteBook(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if (book.isPresent()) bookRepository.deleteById(id);
+        if(!bookRepository.existsById(id)) {
+            throw new BookNotFoundException("Book with ID" + id + "not found.");
+        }
+        bookRepository.deleteById(id);
     }
 
     @Override
     public boolean isBookAvailableForReservation(Long bookId) {
-        Book book = findBookById(bookId);
+        Book book = getBookById(bookId);
         return book.getCopiesAvailable() > 0 ;
     }
 
     @Override
     public void updateBookReservationStatus(Long bookId, boolean reserved) {
-        Book book = findBookById(bookId);
+        Book book = getBookById(bookId);
         if (reserved) {
             book.setCopiesAvailable(book.getCopiesAvailable() - 1);
         } else {
@@ -87,12 +86,5 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
 
     }
-
-    @Override
-    public Book findBookById(Long bookId) {
-        Optional<Book> book = bookRepository.findById(bookId);
-        return book.get();
-    }
-
 
 }

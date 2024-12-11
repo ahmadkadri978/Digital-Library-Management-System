@@ -3,6 +3,10 @@ package kadri.Digital.Library.Management.System.service;
 import kadri.Digital.Library.Management.System.entity.Book;
 import kadri.Digital.Library.Management.System.entity.Reservation;
 import kadri.Digital.Library.Management.System.entity.User;
+import kadri.Digital.Library.Management.System.exception.BookNotAvailableException;
+import kadri.Digital.Library.Management.System.exception.DuplicateReservationException;
+import kadri.Digital.Library.Management.System.exception.ReservationNotFoundException;
+import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +27,19 @@ public class ReservationServiceImpl implements ReservationService{
     @Override
     public void createReservation(Long bookId, Long userId) {
         if (!bookService.isBookAvailableForReservation(bookId)) {
-            throw new IllegalStateException("Book is not available for reservation.");
+            throw new BookNotAvailableException("Book with ID " + bookId + " is not available for reservation.");
         }
 
         // تحقق إذا كان الحجز موجودًا لنفس المستخدم ونفس الكتاب
         boolean alreadyReserved = reservationRepository.existsByBookIdAndUserId(bookId, userId);
         if (alreadyReserved) {
-            throw new IllegalStateException("You have already reserved this book.");
+            throw new DuplicateReservationException("User with ID " + userId + " has already reserved the book with ID " + bookId + ".");
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Book book = bookService.findBookById(bookId);
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found."));
+
+        Book book = bookService.getBookById(bookId);
+
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setBook(book);
@@ -46,21 +52,22 @@ public class ReservationServiceImpl implements ReservationService{
         reservationRepository.save(reservation);
 
 
-        bookService.updateBookReservationStatus(reservation.getBook().getId(), true);
+        bookService.updateBookReservationStatus(bookId, true);
 
     }
 
     @Override
     public void cancelReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation with ID " + reservationId + " not found."));
+
         reservation.setStatus("CANCELED");
         reservationRepository.save(reservation);
 
-        Optional<User> user = userRepository.findById(reservation.getUser().getId());
-        if (reservationRepository.countByUserId(user.get().getId()) == 0) {
-            user.get().setReservation("INACTIVE");
-            userRepository.save(user.get());
+        User user = reservation.getUser();
+        if (reservationRepository.countByUserId(user.getId()) == 0) {
+            user.setReservation("INACTIVE");
+            userRepository.save(user);
         }
 
         bookService.updateBookReservationStatus(reservation.getBook().getId(), false);
@@ -70,7 +77,7 @@ public class ReservationServiceImpl implements ReservationService{
     @Override
     public List<Reservation> getReservationsByUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found."));
         return reservationRepository.findByUser(user);
     }
 }

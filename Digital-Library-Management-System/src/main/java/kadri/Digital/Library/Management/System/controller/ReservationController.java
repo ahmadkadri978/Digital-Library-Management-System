@@ -1,6 +1,7 @@
 package kadri.Digital.Library.Management.System.controller;
 
 import kadri.Digital.Library.Management.System.entity.User;
+import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import kadri.Digital.Library.Management.System.service.ReservationService;
 import kadri.Digital.Library.Management.System.service.UserService;
@@ -26,8 +27,8 @@ public class ReservationController {
 
     @PostMapping("/add")
     public String reserveBook(@RequestParam Long bookId, @AuthenticationPrincipal OAuth2User principal){
-        Long userId = getUserIdFromPrincipal(principal);
-        reservationService.createReservation(bookId, userId);
+        User user = getUserIdFromPrincipal(principal);
+        reservationService.createReservation(bookId, user.getId());
         return "redirect:/reservations";
     }
 
@@ -39,13 +40,13 @@ public class ReservationController {
     }
     @GetMapping
     public String listReservation(Model model, @AuthenticationPrincipal OAuth2User principal){
-        Long userId = getUserIdFromPrincipal(principal);
-        model.addAttribute("reservations", reservationService.getReservationsByUser(userId));
+        User user = getUserIdFromPrincipal(principal);
+        model.addAttribute("reservations", reservationService.getReservationsByUser(user.getId()));
         return "reservations";
     }
-    private Long getUserIdFromPrincipal(OAuth2User principal) {
+    private User getUserIdFromPrincipal(OAuth2User principal) {
         String username = principal.getAttribute("login"); // Retrieve username from principal
-        Optional<User> user = userService.findByUsername(username); // Fetch user by username
-        return user.get().getId(); // Return the user's ID
+        return userService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found."));
     }
 }

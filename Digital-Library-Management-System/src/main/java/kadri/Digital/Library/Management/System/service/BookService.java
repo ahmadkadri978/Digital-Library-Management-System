@@ -3,7 +3,6 @@ package kadri.Digital.Library.Management.System.service;
 import kadri.Digital.Library.Management.System.entity.Book;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface BookService {
     Book saveBook(Book book);
@@ -20,5 +19,4 @@ public interface BookService {
     boolean isBookAvailableForReservation(Long bookId);
     void updateBookReservationStatus(Long bookId, boolean reserved);
 
-    Book findBookById(Long bookId);
 }

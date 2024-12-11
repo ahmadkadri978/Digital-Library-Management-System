@@ -1,20 +1,30 @@
 package kadri.Digital.Library.Management.System.controller;
 
 import kadri.Digital.Library.Management.System.entity.Book;
+import kadri.Digital.Library.Management.System.entity.User;
 import kadri.Digital.Library.Management.System.service.BookService;
+import kadri.Digital.Library.Management.System.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
+@RequestMapping("/Digital Library")
 public class BookController {
 
     @Autowired
     private BookService bookService;
-    @GetMapping("/")
+    @Autowired
+    UserService userService;
+    @GetMapping
     public String homePage(){
         return "home";
     }
@@ -24,9 +34,12 @@ public class BookController {
     public String getBooks(
             @RequestParam(defaultValue = "0") int page, // رقم الصفحة الافتراضي 0
             @RequestParam(defaultValue = "5") int size, // حجم الصفحة الافتراضي 5
-            Model model) {
+            Model model,
+            @AuthenticationPrincipal OAuth2User principal) {
 
         Page<Book> booksPage = bookService.getAllBooks(page, size);
+        User user = getUserIdFromPrincipal(principal);
+        model.addAttribute("user", user);
 
         model.addAttribute("books", booksPage.getContent()); // الكتب في الصفحة الحالية
         model.addAttribute("currentPage", page);
@@ -57,6 +70,11 @@ public class BookController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", booksPage.getTotalPages());
         return "search-results";
+    }
+    private User getUserIdFromPrincipal(OAuth2User principal) {
+        String username = principal.getAttribute("login"); // Retrieve username from principal
+        Optional<User> user = userService.findByUsername(username); // Fetch user by username
+        return user.get();
     }
 }
 
