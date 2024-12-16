@@ -4,6 +4,7 @@ import kadri.Digital.Library.Management.System.entity.User;
 import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,12 +33,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = "users", key = "#page + '-' + #size")
     public Page<User> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page,size);
         return userRepository.findAll(pageable);
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User with ID " + userId + " not found.");
@@ -51,14 +54,27 @@ public class UserServiceImpl implements UserService{
                 .map(User::getUsername)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found."));
     }
+    @Override
+    @Cacheable(value = "usersById", key= "#id")
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found."));
+    }
+
 
     @Override
-    @Cacheable(value = "users", key = "#username")
+    @Cacheable(value = "usersByUsername", key = "#username")
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .or(()->{
                     throw new UserNotFoundException("User with username " + username + " not found.");
                 });
+    }
+
+    @Override
+    @CacheEvict(value = "users", allEntries = true)
+    public void save(User user) {
+        userRepository.save(user);
     }
 
 }

@@ -10,6 +10,7 @@ import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class ReservationServiceImpl implements ReservationService{
     @Autowired
     BookService bookService;
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
     @Override
     public void createReservation(Long bookId, Long userId) {
         if (!bookService.isBookAvailableForReservation(bookId)) {
@@ -35,8 +36,8 @@ public class ReservationServiceImpl implements ReservationService{
         if (alreadyReserved) {
             throw new DuplicateReservationException("User with ID " + userId + " has already reserved the book with ID " + bookId + ".");
         }
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found."));
+        User user = userService.getUserById(userId);
+
 
         Book book = bookService.getBookById(bookId);
 
@@ -47,7 +48,7 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setStatus("ACTIVE");
         if (reservationRepository.countByUserId(userId) == 0) {
             user.setReservation("ACTIVE");
-            userRepository.save(user);
+            userService.save(user);
         }
         reservationRepository.save(reservation);
 
@@ -67,7 +68,7 @@ public class ReservationServiceImpl implements ReservationService{
         User user = reservation.getUser();
         if (reservationRepository.countByUserId(user.getId()) == 0) {
             user.setReservation("INACTIVE");
-            userRepository.save(user);
+            userService.save(user);
         }
 
         bookService.updateBookReservationStatus(reservation.getBook().getId(), false);
@@ -75,9 +76,10 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
+    @Cacheable(value = "reservations", key = "#userId")
     public List<Reservation> getReservationsByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found."));
+        User user = userService.getUserById(userId);
+
         return reservationRepository.findByUser(user);
     }
 }
