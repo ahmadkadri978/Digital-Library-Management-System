@@ -77,7 +77,7 @@ public class ReservationServiceImpl implements ReservationService{
     @Override
     public List<Reservation> getReservationsByUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found."));
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found."));
         return reservationRepository.findByUser(user);
     }
 }

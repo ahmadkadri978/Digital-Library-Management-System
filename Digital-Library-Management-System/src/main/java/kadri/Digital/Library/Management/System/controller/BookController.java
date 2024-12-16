@@ -4,6 +4,9 @@ import kadri.Digital.Library.Management.System.entity.Book;
 import kadri.Digital.Library.Management.System.entity.User;
 import kadri.Digital.Library.Management.System.service.BookService;
 import kadri.Digital.Library.Management.System.service.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+
 @Controller
 @RequestMapping("/Digital Library")
 public class BookController {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     private BookService bookService;
@@ -37,13 +43,18 @@ public class BookController {
             Model model,
             @AuthenticationPrincipal OAuth2User principal) {
 
+        logger.debug("Fetching books for page: {}, size: {}", page, size);
+
         Page<Book> booksPage = bookService.getAllBooks(page, size);
         User user = getUserIdFromPrincipal(principal);
+        logger.debug("Current user: {}", user.getUsername());
         model.addAttribute("user", user);
 
         model.addAttribute("books", booksPage.getContent()); // الكتب في الصفحة الحالية
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", booksPage.getTotalPages());
+
+        logger.debug("Books fetched: {}", booksPage.getContent());
 
         return "books"; // اسم صفحة Thymeleaf لعرض الكتب
     }
