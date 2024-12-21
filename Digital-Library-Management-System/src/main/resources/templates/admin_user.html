@@ -7,7 +7,7 @@
 <h1>Manage Users</h1>
 <div th:text="${#authentication.authorities}">Authentication Details</div>
 
-<a href="/admin/books">Books library</a>
+<a href="/Digital Library/admin/books">Books library</a>
 <table border="1">
     <thead>
     <tr>
@@ -24,7 +24,7 @@
         <td th:text="${user.username}"></td>
         <td>
             <a th:if="${user.reservation=='ACTIVE'}" th:href="@{/admin/user/{id}/reservations(id=${user.id})}">show reservations</a>
-            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}">Delete</a>
+            <a th:href="@{/Digital Library/admin/users/delete/{id}(id=${user.id})}">Delete</a>
         </td>
     </tr>
     </tbody>
@@ -33,10 +33,10 @@
 <!-- Pagination Controls -->
 <div>
     <a th:if="${currentPage > 0}"
-       th:href="@{/admin/users(page=${currentPage - 1}, size=5)}">Previous</a>
+       th:href="@{/Digital Library/admin/users(page=${currentPage - 1}, size=5)}">Previous</a>
     <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
     <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/admin/users(page=${currentPage + 1}, size=5)}">Next</a>
+       th:href="@{/Digital Library/admin/users(page=${currentPage + 1}, size=5)}">Next</a>
 </div>
 </body>
 </html>

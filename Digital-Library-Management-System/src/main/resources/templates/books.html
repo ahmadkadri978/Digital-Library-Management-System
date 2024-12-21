@@ -6,8 +6,8 @@
 <body>
 <h1>Books List</h1>
 <div>
-<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/reservations}">show reservations</a>
-<a  th:href="@{/profile}">profile</a>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/Digital Library/reservations}">show reservations</a>
+<a  th:href="@{/Digital Library/profile}">profile</a>
 </div>
 <h1>Search for Books</h1>
 
@@ -45,7 +45,7 @@
         <td th:text="${book.copiesAvailable}"></td>
         <td th:text="${book.description}"></td>
         <td>
-            <form th:if="${book.copiesAvailable > 0}" th:action="@{/reservations/add}" method="post">
+            <form th:if="${book.copiesAvailable > 0}" th:action="@{/Digital Library/reservations/add}" method="post">
                 <input type="hidden" name="bookId" th:value="${book.id}">
                 <button type="submit">Reserve</button>
             </form>
@@ -63,8 +63,8 @@
     <a th:if="${currentPage + 1 < totalPages}"
        th:href="@{/Digital Library/books(page=${currentPage + 1}, size=${size})}">Next</a>
 </div>
-<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/reservations}">show reservations</a>
-<a  th:href="@{/profile}">profile</a>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/Digital Library/reservations}">show reservations</a>
+<a  th:href="@{/Digital Library/profile}">profile</a>
 
 </body>
 </html>

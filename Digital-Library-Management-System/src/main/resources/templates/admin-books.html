@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1>Manage Books</h1>
-<a href="/admin/books/add">Add New Book</a>
+<a href="/Digital Library/admin/books/add">Add New Book</a>
 <table border="1">
     <thead>
     <tr>
@@ -24,8 +24,8 @@
         <td th:text="${book.copiesAvailable}"></td>
         <td th:text="${book.description}"></td>
         <td>
-            <a th:href="@{/admin/books/edit/{id}(id=${book.id})}">Edit</a>
-            <a th:href="@{/admin/books/delete/{id}(id=${book.id})}">Delete</a>
+            <a th:href="@{/Digital Library/admin/books/edit/{id}(id=${book.id})}">Edit</a>
+            <a th:href="@{/Digital Library/admin/books/delete/{id}(id=${book.id})}">Delete</a>
         </td>
     </tr>
     </tbody>
@@ -34,10 +34,10 @@
 <!-- Pagination Controls -->
 <div>
     <a th:if="${currentPage > 0}"
-       th:href="@{/admin/books(page=${currentPage - 1}, size=5)}">Previous</a>
+       th:href="@{/Digital Library/admin/books(page=${currentPage - 1}, size=5)}">Previous</a>
     <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
     <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/admin/books(page=${currentPage + 1}, size=5)}">Next</a>
+       th:href="@{/Digital Library/admin/books(page=${currentPage + 1}, size=5)}">Next</a>
 </div>
 </body>
 </html>

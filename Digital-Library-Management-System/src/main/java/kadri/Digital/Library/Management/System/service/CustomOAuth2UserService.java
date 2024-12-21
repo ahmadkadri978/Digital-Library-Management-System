@@ -20,26 +20,26 @@ import java.util.*;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomOAuth2UserService(UserService userService) {
+        this.userService = userService;
     }
     public OAuth2User loadUser(OAuth2UserRequest userRequest){
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println("User Attributes: " + oAuth2User.getAttributes());
+//        System.out.println("User Attributes: " + oAuth2User.getAttributes());
 
         String username = oAuth2User.getAttribute("login");
         String name = oAuth2User.getAttribute("name");
         String avatarUrl = oAuth2User.getAttribute("avatar_url");
         // تحقق إذا كان المستخدم موجودًا
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userService.findByUsername(username);
         User user;
         if (userOptional.isEmpty()) {
             // إذا كان المستخدم جديدًا، قم بإنشائه بدور USER
             user = new User(username, name, avatarUrl, "USER");
             user.setReservation("INACTIVE");
-            userRepository.save(user);
+            userService.save(user);
         } else {
             user = userOptional.get();
         }

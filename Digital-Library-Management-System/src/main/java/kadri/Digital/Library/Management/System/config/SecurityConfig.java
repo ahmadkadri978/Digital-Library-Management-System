@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/profile")
+                        .defaultSuccessUrl("/Digital Library/redirect", true)
                                 .userInfoEndpoint(userInfo -> userInfo
                                         .userService(customOAuth2UserService)
                                 )

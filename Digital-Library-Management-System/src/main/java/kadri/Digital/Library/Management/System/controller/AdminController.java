@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/Digital Library/admin")
 public class AdminController {
     @Autowired
     BookService bookService;
@@ -82,7 +82,7 @@ public class AdminController {
     @GetMapping("/books/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
-        return "redirect:/admin/books";
+        return "redirect:/Digital Library/admin/books";
     }
     @GetMapping("/users")
     public String users(Model model ,
@@ -124,7 +124,7 @@ public class AdminController {
     @PostMapping("/user/{userId}/reservations/cancel")
     public String cancelReservation(@PathVariable long userId,@RequestParam Long reservationId, Model model){
         reservationService.cancelReservation(reservationId);
-        return "redirect:/admin/user/" + userId + "/reservations";
+        return "redirect:/Digital Library/admin/user/" + userId + "/reservations";
     }
 
 }

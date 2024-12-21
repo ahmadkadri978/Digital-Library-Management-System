@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/reservations")
+@RequestMapping("/Digital Library/reservations")
 public class ReservationController {
     @Autowired
     ReservationService reservationService;
@@ -29,14 +29,14 @@ public class ReservationController {
     public String reserveBook(@RequestParam Long bookId, @AuthenticationPrincipal OAuth2User principal){
         User user = getUserIdFromPrincipal(principal);
         reservationService.createReservation(bookId, user.getId());
-        return "redirect:/reservations";
+        return "redirect:/Digital Library/reservations";
     }
 
 
     @PostMapping("/cancel")
     public String cancelReservation(@RequestParam Long reservationId) {
         reservationService.cancelReservation(reservationId);
-        return "redirect:/reservations";
+        return "redirect:/Digital Library/reservations";
     }
     @GetMapping
     public String listReservation(Model model, @AuthenticationPrincipal OAuth2User principal){

@@ -25,12 +25,12 @@
         <td th:text="${reservation.status}"></td>
         <td>
             <form th:if="${#authentication.authorities.?[toString() == 'ROLE_USER'].size() > 0 && #authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() == 0}"
-                  th:action="@{/reservations/cancel}" method="post">
+                  th:action="@{/Digital Library/reservations/cancel}" method="post">
                 <input type="hidden" name="reservationId" th:value="${reservation.id}">
                 <button type="submit" th:if="${reservation.status == 'ACTIVE'}">Cancel</button>
             </form>
             <form th:if="${#authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() > 0}"
-                  th:action="@{/admin/user/{userId}/reservations/cancel(userId=${reservation.user.id})}" method="post">
+                  th:action="@{/Digital Library/admin/user/{userId}/reservations/cancel(userId=${reservation.user.id})}" method="post">
                 <input type="hidden" name="reservationId" th:value="${reservation.id}">
                 <button type="submit" th:if="${reservation.status == 'ACTIVE'}">Cancel</button>
             </form>

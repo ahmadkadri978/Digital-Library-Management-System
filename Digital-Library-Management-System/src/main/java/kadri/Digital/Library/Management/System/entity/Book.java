@@ -7,7 +7,12 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "books")
+@Table(name = "books",
+indexes={
+        @Index(name = "idx_title", columnList = "title"),
+        @Index(name = "idx_author", columnList = "author"),
+        @Index(name = "idx_isbn", columnList = "isbn")
+})
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 1L;

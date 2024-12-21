@@ -10,6 +10,7 @@ import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class ReservationServiceImpl implements ReservationService{
     @Autowired
     UserService userService;
     @Override
+    @CacheEvict(value = "reservations", allEntries = true)
     public void createReservation(Long bookId, Long userId) {
         if (!bookService.isBookAvailableForReservation(bookId)) {
             throw new BookNotAvailableException("Book with ID " + bookId + " is not available for reservation.");
@@ -58,6 +60,7 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
+    @CacheEvict(value = "reservations", allEntries = true)
     public void cancelReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation with ID " + reservationId + " not found."));

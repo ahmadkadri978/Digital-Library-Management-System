@@ -9,8 +9,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-@Controller
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@Controller
+@RequestMapping("/Digital Library")
 public class UserController {
     @Autowired
     UserService userService;
