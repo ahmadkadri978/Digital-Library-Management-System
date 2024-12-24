@@ -27,24 +27,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
     public OAuth2User loadUser(OAuth2UserRequest userRequest){
         OAuth2User oAuth2User = super.loadUser(userRequest);
-//        System.out.println("User Attributes: " + oAuth2User.getAttributes());
+        System.out.println("User Attributes: " + oAuth2User.getAttributes());
 
+
+        // الحصول على اسم المستخدم من OAuth2User
         String username = oAuth2User.getAttribute("login");
-        String name = oAuth2User.getAttribute("name");
-        String avatarUrl = oAuth2User.getAttribute("avatar_url");
-        // تحقق إذا كان المستخدم موجودًا
-        Optional<User> userOptional = userService.findByUsername(username);
-        User user;
-        if (userOptional.isEmpty()) {
-            // إذا كان المستخدم جديدًا، قم بإنشائه بدور USER
-            user = new User(username, name, avatarUrl, "USER");
-            user.setReservation("INACTIVE");
-            userService.save(user);
-        } else {
-            user = userOptional.get();
-        }
 
-        // إضافة الدور للمستخدم
+        // تحقق إذا كان المستخدم موجودًا
+        User user = userService.findByUsername(username)
+                .orElseGet(() -> {
+                    // إذا لم يكن موجودًا، قم بتسجيله كمستخدم جديد
+                    User newUser = userService.registerUser(oAuth2User);
+                    return newUser;
+                });
+
+        // إرجاع المستخدم مع الدور الخاص به
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole())),
                 oAuth2User.getAttributes(),

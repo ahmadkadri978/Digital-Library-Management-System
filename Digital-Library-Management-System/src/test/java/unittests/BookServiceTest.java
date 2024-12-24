@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class BookServiceImplTest {
+public class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;

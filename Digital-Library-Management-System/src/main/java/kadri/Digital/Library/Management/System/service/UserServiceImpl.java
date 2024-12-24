@@ -20,16 +20,17 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public User registerUser(OAuth2User oAuth2User) {
         String username = oAuth2User.getAttribute("login");
         String name = oAuth2User.getAttribute("name");
         String avatarUrl = oAuth2User.getAttribute("avatar_url");
 
-        return userRepository.findByUsername(username)
-                .orElseGet(() -> {
                     User newUser = new User(username, name, avatarUrl, "USER");
+                    newUser.setReservation("INACTIVE");
+                    System.out.println("User Username: " + newUser.getUsername());
                     return userRepository.save(newUser);
-                });
+
     }
 
     @Override
@@ -63,12 +64,9 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    @Cacheable(value = "usersByUsername", key = "#username")
+    @Cacheable(value = "usersByUsername", key = "#username", unless = "#result == null")
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .or(()->{
-                    throw new UserNotFoundException("User with username " + username + " not found.");
-                });
+        return userRepository.findByUsername(username);
     }
 
     @Override

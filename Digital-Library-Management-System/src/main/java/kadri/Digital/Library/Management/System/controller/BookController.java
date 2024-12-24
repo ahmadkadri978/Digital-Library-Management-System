@@ -41,7 +41,7 @@ public class BookController {
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             return "redirect:/Digital Library/admin/books";
         }
-        return "redirect:/Digital Library/profile";
+        return "redirect:/Digital Library/books";
     }
 
 
