@@ -9,6 +9,8 @@ import kadri.Digital.Library.Management.System.exception.ReservationNotFoundExce
 import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,16 +28,19 @@ public class ReservationServiceImpl implements ReservationService{
     BookService bookService;
     @Autowired
     UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(ReservationServiceImpl.class);
     @Override
     @CacheEvict(value = "reservations", allEntries = true)
     public void createReservation(Long bookId, Long userId) {
         if (!bookService.isBookAvailableForReservation(bookId)) {
+            logger.debug("Book is not available for reservation. ID: " + bookId);
             throw new BookNotAvailableException("Book with ID " + bookId + " is not available for reservation.");
         }
 
         // تحقق إذا كان الحجز موجودًا لنفس المستخدم ونفس الكتاب
         boolean alreadyReserved = reservationRepository.existsByBookIdAndUserId(bookId, userId);
         if (alreadyReserved) {
+            logger.debug("Duplicate reservation detected for user ID: " + userId + " and book ID: " + bookId);
             throw new DuplicateReservationException("User with ID " + userId + " has already reserved the book with ID " + bookId + ".");
         }
         User user = userService.getUserById(userId);
@@ -48,13 +53,16 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setBook(book);
         reservation.setReservationDate(LocalDateTime.now());
         reservation.setStatus("ACTIVE");
+
         if (reservationRepository.countByUserId(userId) == 0) {
+            logger.debug("First reservation for user ID: " + userId);
             user.setReservation("ACTIVE");
             userService.save(user);
         }
+        logger.debug("Saving reservation for user ID: " + userId + " and book ID: " + bookId);
         reservationRepository.save(reservation);
 
-
+        logger.debug("Updating book reservation status for book ID: " + bookId);
         bookService.updateBookReservationStatus(bookId, true);
 
     }
