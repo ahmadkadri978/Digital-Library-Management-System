@@ -43,7 +43,9 @@ public class Book implements Serializable {
     @Column
     @Min(value = 0, message = "Copies available must be 0 or more")
     private int copiesAvailable;
-    // Constructors, Getters, and Setters
+    @Version
+    private Integer version;
+
     public Book() {}
 
     public Book(String title, String author, String description, String isbn, int copiesAvailable) {

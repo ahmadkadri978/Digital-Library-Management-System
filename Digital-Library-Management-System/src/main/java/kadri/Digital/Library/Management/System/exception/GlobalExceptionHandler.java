@@ -1,5 +1,6 @@
 package kadri.Digital.Library.Management.System.exception;
 
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
     public String handleDuplicateReservationException(DuplicateReservationException ex, Model model) {
         model.addAttribute("error", ex.getMessage());
         return "error/duplicate-reservation"; // صفحة خطأ مخصصة
+    }
+    @ExceptionHandler(OptimisticLockException.class)
+    public String handleOptimisticLockException(OptimisticLockException ex, Model model) {
+        model.addAttribute("error","The record was updated by another user . Please try again.");
+        return "error/optimistic-lock";
     }
     @ExceptionHandler(Exception.class)
     public String handleGeneralException(Exception ex,  Model model) {
