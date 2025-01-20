@@ -7,6 +7,7 @@ import kadri.Digital.Library.Management.System.exception.BookNotAvailableExcepti
 import kadri.Digital.Library.Management.System.exception.DuplicateReservationException;
 import kadri.Digital.Library.Management.System.exception.ReservationNotFoundException;
 import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
+import kadri.Digital.Library.Management.System.module.NotificationMessage;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class ReservationServiceImpl implements ReservationService{
     BookService bookService;
     @Autowired
     UserService userService;
+    @Autowired
+    private NotificationProducer notificationProducer;
     private static final Logger logger = LoggerFactory.getLogger(ReservationServiceImpl.class);
     @Override
     @CacheEvict(value = "reservations", allEntries = true)
@@ -44,8 +47,6 @@ public class ReservationServiceImpl implements ReservationService{
             throw new DuplicateReservationException("User with ID " + userId + " has already reserved the book with ID " + bookId + ".");
         }
         User user = userService.getUserById(userId);
-
-
         Book book = bookService.getBookById(bookId);
 
         Reservation reservation = new Reservation();
@@ -54,16 +55,24 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setReservationDate(LocalDateTime.now());
         reservation.setStatus("ACTIVE");
 
-        if (reservationRepository.countByUserId(userId) == 0) {
-            logger.debug("First reservation for user ID: " + userId);
-            user.setReservation("ACTIVE");
-            userService.save(user);
-        }
         logger.debug("Saving reservation for user ID: " + userId + " and book ID: " + bookId);
         reservationRepository.save(reservation);
 
         logger.debug("Updating book reservation status for book ID: " + bookId);
         bookService.updateBookReservationStatus(bookId, true);
+
+        if (reservationRepository.countByUserId(userId) == 0) {
+            logger.debug("First reservation for user ID: " + userId);
+            user.setReservation("ACTIVE");
+            userService.save(user);
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(
+                "New BookReservation",
+                "The Book \"" + book.getTitle() + "\" booked by \"" + user.getUsername()
+
+        );
+        notificationProducer.sentNotification(notificationMessage);
 
     }
 

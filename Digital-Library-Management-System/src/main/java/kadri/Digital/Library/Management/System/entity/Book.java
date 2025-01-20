@@ -43,8 +43,8 @@ public class Book implements Serializable {
     @Column
     @Min(value = 0, message = "Copies available must be 0 or more")
     private int copiesAvailable;
-    @Version
-    private Integer version;
+//    @Version
+//    private Integer version;
 
     public Book() {}
 
