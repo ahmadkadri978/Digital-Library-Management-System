@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+<div>
+    <a th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" href="/Digital Library/books">Books Library</a>
+    <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" href="/Digital Library/admin/books">Books Library</a>
+    <a href="/logout">Logout</a>
+</div>
+<h1>Welcome, <span th:text="${name}"></span></h1>
+<p>User name: <span th:text="${username}"></span> <div th:text="${#authentication.authorities}">Authentication Details</div></p>
+
+<img th:src="${avatar}" alt="User avatar" style="width: 150px; height: 150px; border-radius: 50%;">
+</body>
+</html>

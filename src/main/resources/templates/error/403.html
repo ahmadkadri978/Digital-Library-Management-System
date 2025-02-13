@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>403</title>
+</head>
+<body>
+<h1>Access denied</h1>
+<p th:text="${error}"></p>
+<a th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" href="/Digital Library/books">Back to library</a>
+<a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" href="/Digital Library/admin/books">Back to library</a>
+</body>
+</html>

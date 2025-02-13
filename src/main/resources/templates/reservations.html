@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservations</title>
+</head>
+<body>
+<h1>My Reservations</h1>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>Book Title</th>
+        <th>Reservation Date</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="reservation : ${reservations}">
+        <td th:text="${reservation.book.title}"></td>
+        <td th:text="${reservation.reservationDate}"></td>
+        <td>
+            <form th:if="${#authentication.authorities.?[toString() == 'ROLE_USER'].size() > 0 && #authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() == 0}"
+                  th:action="@{/Digital Library/reservations/cancel}" method="post">
+                <input type="hidden" name="reservationId" th:value="${reservation.id}">
+                <button type="submit">Cancel</button>
+            </form>
+            <form th:if="${#authentication.authorities.?[toString() == 'ROLE_ADMIN'].size() > 0}"
+                  th:action="@{/Digital Library/admin/user/{userId}/reservations/cancel(userId=${reservation.user.id})}" method="post">
+                <input type="hidden" name="reservationId" th:value="${reservation.id}">
+                <button type="submit">Cancel</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" th:href="@{/Digital Library/books}">Books Library</a>
+<a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/Digital Library/admin/users}">Users List</a>
+</body>
+</html>
