@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Book</title>
+</head>
+<body>
+<h1>Edit Book</h1>
+<a href="/Digital Library/admin/books">Books library</a>
+<form th:action="@{/Digital Library/admin/books/edit/{id}(id=${book.id})}" method="post">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" th:value="${book.title}" >
+    <p th:if="${#fields.hasErrors('${book.title}')}" th:errors="${book.title}"></p>
+    <br>
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author" th:value="${book.author}" >
+    <p th:if="${#fields.hasErrors('${book.author}')}" th:errors="${book.author}"></p>
+    <br>
+    <lable for="isbn">ISBN:</lable>
+    <input type="text" id="isbn" name="isbn" th:value="${book.isbn}" >
+    <p th:if="${#fields.hasErrors('${book.isbn}')}" th:errors="${book.isbn}"></p>
+    <br>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" th:text="${book.description}"></textarea>
+    <p th:if="${#fields.hasErrors('${book.description}')}" th:errors="${book.description}"></p>
+    <br>
+    <label for="copiesAvailable">Copies Available:</label>
+    <input type="number" id="copiesAvailable" name="copiesAvailable" th:value="${book.copiesAvailable}">
+    <p th:if="${#fields.hasErrors('${book.copiesAvailable}')}" th:errors="${book.copiesAvailable}"></p>
+    <br><br>
+    <button type="submit">Update Book</button>
+</form>
+</body>
+</html>

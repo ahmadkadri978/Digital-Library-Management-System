@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+<h1>Search Results</h1>
+
+<!-- عرض النتائج -->
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Copies Available</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.copiesAvailable}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- إذا لم توجد نتائج -->
+<p th:if="${#lists.isEmpty(books)}">No results found for your search criteria.</p>
+
+<!-- Pagination controls -->
+<div>
+    <a th:if="${currentPage > 0}"
+       th:href="@{/search(title=${param.title}, author=${param.author}, isbn=${param.isbn}, page=${currentPage - 1}, size=5)}">Previous</a>
+    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/search(title=${param.title}, author=${param.author}, isbn=${param.isbn}, page=${currentPage + 1}, size=5)}">Next</a>
+</div>
+<br>
+<a th:href="@{/Digital Library/books}">Back to Books List</a>
+</body>
+</html>
