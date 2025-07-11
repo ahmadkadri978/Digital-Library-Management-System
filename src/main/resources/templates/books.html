@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books</title>
+</head>
+<body>
+<h1>Books List</h1>
+<div>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/Digital Library/reservations}">show reservations</a>
+<a  th:href="@{/Digital Library/profile}">profile</a>
+</div>
+<h1>Search for Books</h1>
+
+<form action="/Digital Library/search" method="get">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title">
+    <br>
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author">
+    <br>
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="isbn">
+    <br>
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Copies Available</th>
+        <th>Description</th>
+        <th>Reservation</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.copiesAvailable}"></td>
+        <td th:text="${book.description}"></td>
+        <td>
+            <form th:if="${book.copiesAvailable > 0}" th:action="@{/Digital Library/reservations/add}" method="post">
+                <input type="hidden" name="bookId" th:value="${book.id}">
+                <button type="submit">Reserve</button>
+            </form>
+            <span th:if="${book.copiesAvailable == 0}">Not Available</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<div>
+    <a th:if="${currentPage > 0}"
+       th:href="@{/Digital Library/books(page=${currentPage - 1}, size=${size})}">Previous</a>
+    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/Digital Library/books(page=${currentPage + 1}, size=${size})}">Next</a>
+</div>
+<a th:if="${user.reservation=='ACTIVE'}" th:href="@{/Digital Library/reservations}">show reservations</a>
+<a  th:href="@{/Digital Library/profile}">profile</a>
+
+</body>
+</html>

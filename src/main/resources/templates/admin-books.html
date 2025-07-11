@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Books</title>
+</head>
+<body>
+<h1>Manage Books</h1>
+<a href="/Digital Library/admin/books/add">Add New Book</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Copies Available</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.copiesAvailable}"></td>
+        <td th:text="${book.description}"></td>
+        <td>
+            <a th:href="@{/Digital Library/admin/books/edit/{id}(id=${book.id})}">Edit</a>
+            <a th:href="@{/Digital Library/admin/books/delete/{id}(id=${book.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div>
+    <a th:if="${currentPage > 0}"
+       th:href="@{/Digital Library/admin/books(page=${currentPage - 1}, size=5)}">Previous</a>
+    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/Digital Library/admin/books(page=${currentPage + 1}, size=5)}">Next</a>
+</div>
+</body>
+</html>

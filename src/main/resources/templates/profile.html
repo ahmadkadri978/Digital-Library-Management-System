@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+<h1>Welcome, <span th:text="${name}"></span></h1>
+<p>User name: <span th:text="${username}"></span> <div th:text="${#authentication.authorities}">Authentication Details</div></p>
+
+<img th:src="${avatar}" alt="User avatar" style="width: 150px; height: 150px; border-radius: 50%;">
+<br><br>
+<a href="/logout">Logout</a>
+<br><br>
+<a href="/Digital Library/books">View Books</a>
+
+</body>
+</html>
