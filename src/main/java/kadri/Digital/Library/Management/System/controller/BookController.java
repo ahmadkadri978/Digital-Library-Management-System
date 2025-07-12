@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class BookController {
 
 
     // عرض الكتب مع Pagination
+
     @GetMapping("/books")
     public String getBooks(
             @RequestParam(defaultValue = "0") int page, // رقم الصفحة الافتراضي 0
@@ -68,6 +70,7 @@ public class BookController {
 
         return "books"; // اسم صفحة Thymeleaf لعرض الكتب
     }
+
     @GetMapping("/search")
     public String searchBooks(
             @RequestParam(required = false) String title,
@@ -91,6 +94,20 @@ public class BookController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", booksPage.getTotalPages());
         return "search-results";
+    }
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal OAuth2User oAuth2User, Model model){
+        if (oAuth2User == null) {
+            model.addAttribute("error", "User is not authenticated.");
+            return "error"; // عرض صفحة خطأ مخصصة
+        }
+
+        model.addAttribute("username", oAuth2User.getAttribute("login"));
+        model.addAttribute("name", oAuth2User.getAttribute("name"));
+        model.addAttribute("role", oAuth2User.getAttribute("name"));
+        model.addAttribute("avatar", oAuth2User.getAttribute("avatar_url"));
+
+        return "profile";
     }
     private User getUserIdFromPrincipal(OAuth2User principal) {
         String username = principal.getAttribute("login"); // Retrieve username from principal

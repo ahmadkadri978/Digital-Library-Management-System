@@ -94,7 +94,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @CacheEvict(value = "book", key = "#bookId")
+    @CacheEvict(value = "books", allEntries = true)
     public void updateBookReservationStatus(Long bookId, boolean reserved) {
         Book book = getBookById(bookId);
         if (reserved) {

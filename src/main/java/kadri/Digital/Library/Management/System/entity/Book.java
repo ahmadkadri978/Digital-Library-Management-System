@@ -43,17 +43,22 @@ public class Book implements Serializable {
     @Column
     @Min(value = 0, message = "Copies available must be 0 or more")
     private int copiesAvailable;
+    @Column
+    private Boolean reserved;
+
 //    @Version
 //    private Integer version;
 
-    public Book() {}
+    public Book() {
+    }
 
-    public Book(String title, String author, String description, String isbn, int copiesAvailable) {
+    public Book(String title, String author, String description, String isbn, int copiesAvailable, Boolean reserved) {
         this.title = title;
         this.author = author;
         this.description = description;
         this.isbn = isbn;
         this.copiesAvailable = copiesAvailable;
+        this.reserved = reserved;
     }
 
     public Long getId() {
@@ -104,5 +109,11 @@ public class Book implements Serializable {
         this.copiesAvailable = copiesAvailable;
     }
 
-}
+    public Boolean getReserved() {
+        return reserved;
+    }
 
+    public void setReserved(Boolean reserved) {
+        this.reserved = reserved;
+    }
+}

@@ -7,7 +7,6 @@ import kadri.Digital.Library.Management.System.exception.BookNotAvailableExcepti
 import kadri.Digital.Library.Management.System.exception.DuplicateReservationException;
 import kadri.Digital.Library.Management.System.exception.ReservationNotFoundException;
 import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
-import kadri.Digital.Library.Management.System.module.NotificationMessage;
 import kadri.Digital.Library.Management.System.repository.ReservationRepository;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
 import org.slf4j.Logger;
@@ -29,51 +28,46 @@ public class ReservationServiceImpl implements ReservationService{
     BookService bookService;
     @Autowired
     UserService userService;
-    @Autowired
-    private NotificationProducer notificationProducer;
     private static final Logger logger = LoggerFactory.getLogger(ReservationServiceImpl.class);
     @Override
     @CacheEvict(value = "reservations", allEntries = true)
     public void createReservation(Long bookId, Long userId) {
-        if (!bookService.isBookAvailableForReservation(bookId)) {
-            logger.debug("Book is not available for reservation. ID: " + bookId);
-            throw new BookNotAvailableException("Book with ID " + bookId + " is not available for reservation.");
-        }
-
-        // تحقق إذا كان الحجز موجودًا لنفس المستخدم ونفس الكتاب
-        boolean alreadyReserved = reservationRepository.existsByBookIdAndUserId(bookId, userId);
-        if (alreadyReserved) {
-            logger.debug("Duplicate reservation detected for user ID: " + userId + " and book ID: " + bookId);
-            throw new DuplicateReservationException("User with ID " + userId + " has already reserved the book with ID " + bookId + ".");
-        }
-        User user = userService.getUserById(userId);
+        // تحقق من توفر نسخ
         Book book = bookService.getBookById(bookId);
+        if (book.getCopiesAvailable() <= 0) {
+            logger.debug("No copies available for book ID: " + bookId);
+            throw new BookNotAvailableException("No copies available for book with ID " + bookId + ".");
+        }
 
+        // تحقق من وجود حجز ACTIVE
+        boolean alreadyActiveReservation = reservationRepository.existsByBookIdAndUserIdAndStatus(bookId, userId, "ACTIVE");
+        if (alreadyActiveReservation) {
+            logger.debug("Duplicate ACTIVE reservation for user ID: " + userId + " and book ID: " + bookId);
+            throw new DuplicateReservationException("User with ID " + userId + " already has an ACTIVE reservation for book ID " + bookId + ".");
+        }
+
+        User user = userService.getUserById(userId);
+
+        // إنشاء الحجز
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setBook(book);
         reservation.setReservationDate(LocalDateTime.now());
         reservation.setStatus("ACTIVE");
 
-        logger.debug("Saving reservation for user ID: " + userId + " and book ID: " + bookId);
         reservationRepository.save(reservation);
 
-        logger.debug("Updating book reservation status for book ID: " + bookId);
-        bookService.updateBookReservationStatus(bookId, true);
+        // خصم نسخة من الكتاب
+        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+        book.setReserved(true);
+        bookService.saveBook(book);
 
-        if (reservationRepository.countByUserId(userId) == 0) {
-            logger.debug("First reservation for user ID: " + userId);
+        // تحديث حالة المستخدم
+        long activeCount = reservationRepository.countByUserIdAndStatus(userId, "ACTIVE");
+        if (activeCount == 1) {
             user.setReservation("ACTIVE");
             userService.save(user);
         }
-
-        NotificationMessage notificationMessage = new NotificationMessage(
-                "New BookReservation",
-                "The Book \"" + book.getTitle() + "\" booked by \"" + user.getUsername()
-
-        );
-        notificationProducer.sentNotification(notificationMessage);
-
     }
 
     @Override
@@ -86,14 +80,28 @@ public class ReservationServiceImpl implements ReservationService{
         reservationRepository.save(reservation);
 
         User user = reservation.getUser();
-        if (reservationRepository.countByUserId(user.getId()) == 0) {
+        Book book = reservation.getBook();
+
+        // إعادة نسخة إلى الكتاب
+        book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+
+        // إذا أصبحت كل النسخ متاحة، نلغي الحجز
+        if (book.getCopiesAvailable() > 0) {
+            book.setReserved(false);
+        }
+
+        bookService.saveBook(book);
+
+        // تحديث حالة المستخدم
+        long activeCount = reservationRepository.countByUserIdAndStatus(user.getId(), "ACTIVE");
+        if (activeCount == 0) {
+            logger.debug("No active reservations left for user ID: " + user.getId());
             user.setReservation("INACTIVE");
             userService.save(user);
         }
-
-        bookService.updateBookReservationStatus(reservation.getBook().getId(), false);
-
     }
+
+
 
     @Override
     @Cacheable(value = "reservations", key = "#userId")

@@ -2,32 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<h1>Edit Book</h1>
-<a href="/Digital Library/admin/books">Books library</a>
-<form th:action="@{/Digital Library/admin/books/edit/{id}(id=${book.id})}" method="post">
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" th:value="${book.title}" >
-    <p th:if="${#fields.hasErrors('${book.title}')}" th:errors="${book.title}"></p>
-    <br>
-    <label for="author">Author:</label>
-    <input type="text" id="author" name="author" th:value="${book.author}" >
-    <p th:if="${#fields.hasErrors('${book.author}')}" th:errors="${book.author}"></p>
-    <br>
-    <lable for="isbn">ISBN:</lable>
-    <input type="text" id="isbn" name="isbn" th:value="${book.isbn}" >
-    <p th:if="${#fields.hasErrors('${book.isbn}')}" th:errors="${book.isbn}"></p>
-    <br>
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" th:text="${book.description}"></textarea>
-    <p th:if="${#fields.hasErrors('${book.description}')}" th:errors="${book.description}"></p>
-    <br>
-    <label for="copiesAvailable">Copies Available:</label>
-    <input type="number" id="copiesAvailable" name="copiesAvailable" th:value="${book.copiesAvailable}">
-    <p th:if="${#fields.hasErrors('${book.copiesAvailable}')}" th:errors="${book.copiesAvailable}"></p>
-    <br><br>
-    <button type="submit">Update Book</button>
-</form>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Edit Book</h2>
+        <a href="/Digital Library/admin/books" class="btn btn-outline-secondary">Back to Library</a>
+    </div>
+
+    <!-- ✅ هنا أضفنا th:object -->
+    <form th:action="@{/Digital Library/admin/books/edit/{id}(id=${book.id})}"
+          th:object="${book}" method="post" class="shadow p-4 bg-white rounded">
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" id="title" th:field="*{title}" class="form-control" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="author" class="form-label">Author:</label>
+            <input type="text" id="author" th:field="*{author}" class="form-control" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="isbn" class="form-label">ISBN:</label>
+            <input type="text" id="isbn" th:field="*{isbn}" class="form-control" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
+            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="copiesAvailable" class="form-label">Copies Available:</label>
+            <input type="number" id="copiesAvailable" th:field="*{copiesAvailable}" class="form-control" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('copiesAvailable')}" th:errors="*{copiesAvailable}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Book</button>
+    </form>
+</div>
+
 </body>
 </html>
+
+

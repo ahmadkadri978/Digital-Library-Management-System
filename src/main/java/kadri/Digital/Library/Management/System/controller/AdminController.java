@@ -54,6 +54,7 @@ public class AdminController {
         model.addAttribute("totalPages", booksPage.getTotalPages());
         return "admin-books";
     }
+
     @GetMapping("/books/add")
     public String showAddBookForm(Model model) {
         model.addAttribute("book", new Book());
@@ -66,24 +67,29 @@ public class AdminController {
         }
 
         bookService.saveBook(book);
-        return "redirect:/admin/books";
+        return "redirect:/Digital Library/admin/books";
     }
+
     @GetMapping("/books/edit/{id}")
     public String showEditBookForm(@PathVariable Long id, Model model) {
-        model.addAttribute("book", bookService.getBookById(id));
+        Book book = bookService.getBookById(id);
+        model.addAttribute("book", book);
         return "edit-book";
     }
+
     @PostMapping("/books/edit/{id}")
     public String editBook(@PathVariable Long id, @ModelAttribute @Valid Book book, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) return "edit-book";
         bookService.updateBook(id, book);
-        return "redirect:/admin/books";
+        return "redirect:/Digital Library/admin/books";
     }
+
     @GetMapping("/books/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return "redirect:/Digital Library/admin/books";
     }
+
     @GetMapping("/users")
     public String users(Model model ,
                         @RequestParam(defaultValue = "0") int page,
@@ -98,6 +104,7 @@ public class AdminController {
         return "admin_user";
 
     }
+
     @GetMapping("users/delete/{id}")
     public String deleteUser(@PathVariable Long id, HttpServletRequest request){
         String username = userService.getUser(id);
@@ -110,21 +117,38 @@ public class AdminController {
             // حذف SecurityContext
             SecurityContextHolder.clearContext();
         }
-        return "redirect:/admin/users";
+        return "redirect:/Digital Library/admin/users";
     }
+
     @GetMapping("/user/{id}/reservations")
     public String listReservation(@PathVariable Long id, Model model){
         List<Reservation> userReservations = reservationService.getReservationsByUser(id);
-        userReservations.forEach(System.out::println);
-
+        String username = userService.getUserById(id).getUsername();
 
         model.addAttribute("reservations", userReservations);
+        model.addAttribute("username", username);
         return "reservations";
     }
+
+
     @PostMapping("/user/{userId}/reservations/cancel")
     public String cancelReservation(@PathVariable long userId,@RequestParam Long reservationId, Model model){
         reservationService.cancelReservation(reservationId);
         return "redirect:/Digital Library/admin/user/" + userId + "/reservations";
+    }
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal OAuth2User oAuth2User, Model model){
+        if (oAuth2User == null) {
+            model.addAttribute("error", "User is not authenticated.");
+            return "error"; // عرض صفحة خطأ مخصصة
+        }
+
+        model.addAttribute("username", oAuth2User.getAttribute("login"));
+        model.addAttribute("name", oAuth2User.getAttribute("name"));
+        model.addAttribute("role", oAuth2User.getAttribute("name"));
+        model.addAttribute("avatar", oAuth2User.getAttribute("avatar_url"));
+
+        return "profile";
     }
 
 }

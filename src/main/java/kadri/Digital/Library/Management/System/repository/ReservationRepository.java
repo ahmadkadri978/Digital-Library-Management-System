@@ -13,6 +13,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByBook(Book book);
 
     boolean existsByBookIdAndUserId(Long bookId, Long userId);
+    long countByUserIdAndStatus(Long userId, String status);
+    boolean existsByBookIdAndUserIdAndStatus(Long bookId, Long userId, String status);
+
+
 
     int countByUserId(Long userId);
 }
