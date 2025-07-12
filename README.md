@@ -1,132 +1,87 @@
-# 📚 Digital Library Management System
+# Digital Library Management System
 
-A full-stack digital library application built with Spring Boot, Thymeleaf, and OAuth2 (GitHub Login). It allows users to view and reserve books, and admins to manage users and book inventory professionally.
+A modern Spring Boot application for managing a digital library. The system supports book management, user reservations, GitHub login authentication, and utilizes Redis caching for enhanced performance.
 
----
+## 🔧 Technologies Used
 
-## 💡 Main Features
+* **Spring Boot 3**
+* **Thymeleaf** (template engine)
+* **Spring Security** with **OAuth2 GitHub login**
+* **Spring Data JPA** with **MySQL**
+* **Redis Cache**
+* **Bootstrap 5** for UI styling
 
-### 👤 Normal User
-- GitHub OAuth2 login
-- View book list with advanced search (by title, author, or ISBN)
-- Reserve a book if not already reserved and copies are available
-- Cancel existing reservations
-- View list of own reservations
+## 🌟 Features
 
-### 🛠️ Admin
-- Full access to the admin panel
-- View all registered users and their reservation status
-- Manage reservations of any user (view/cancel)
-- Add / Edit / Delete books
+* Login with GitHub (OAuth2)
+* Role-based access: Admin / User
+* Book CRUD operations (Admin only)
+* View books with pagination and search (by title, author, or ISBN)
+* Reserve books if copies are available (User only)
+* Cancel reservations
+* Dynamic book availability (copies increase/decrease with reservation status)
+* Session-based access control
 
----
+## 📁 Project Structure
 
-## 🔐 Authentication
+```
+src/
+ └── main/
+     ├── java/kadri/Digital/Library/Management/System/
+     │   ├── controller/
+     │   ├── entity/
+     │   ├── repository/
+     │   ├── service/
+     │   ├── config/
+     │   └── DigitalLibraryManagementSystemApplication.java
+     └── resources/
+         ├── templates/
+         └── application.properties
+```
 
-- OAuth2 login with GitHub
-- First-time GitHub login triggers auto-registration
-- Role-based access control using Spring Security
-
----
-
-## 🧩 Technical Stack
-
-| Technology        | Purpose                            |
-|-------------------|------------------------------------|
-| Java + Spring Boot| Back-End REST & MVC logic          |
-| Thymeleaf         | Dynamic user interfaces             |
-| Spring Security + OAuth2 | Authentication & Authorization |
-| Spring Data JPA + H2/MySQL | Database ORM                 |
-| Spring Cache      | Performance via caching            |
-| Bootstrap 5       | Responsive UI design               |
-
----
-
-## 🗃️ Database Schema
-
-- **User**: User info with active/inactive reservation state
-- **Book**: Book details including available copies
-- **Reservation**: Tracks user-book reservations with status
-
----
-
-## 🧠 Reservation Logic
-
-- A user can only reserve a book once if an active reservation exists
-- If no copies are available, reservation is denied
-- Cancelling a reservation increases available copies
-- Reserving decreases available copies
-
----
-
-## 🧪 Run Locally
+## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/digital-library.git
-cd digital-library
+git clone https://github.com/ahmadkadri978/Digital-Library-Management-System.git
 ```
 
-### 2. Open in IntelliJ or VS Code
+### 2. Set up your database
 
-- Use JDK 17+
-- Run `DigitalLibraryManagementSystemApplication.java`
+Create a MySQL database named `digital_library` and update credentials in `application.properties`.
 
-### 3. Setup GitHub OAuth App
+### 3. Redis Setup (Optional but recommended)
 
-Create a GitHub OAuth app at: `https://github.com/settings/developers`
+Ensure Redis server is running locally on default port `6379`. The application uses Redis for caching.
 
-Add the credentials to `application.yml`:
+### 4. Configure GitHub OAuth2
 
-```yaml
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: YOUR_CLIENT_ID
-            client-secret: YOUR_CLIENT_SECRET
+Register an app on GitHub Developer Settings and set your `client-id` and `client-secret` in `application.properties`.
+
+> Alternatively, use the included `application-sample.properties` as a reference to create your own secure config file.
+
+### 5. Run the application
+
+```bash
+mvn spring-boot:run
 ```
 
----
-
-## 📂 Project Structure
-
-```
-src
-├── controller
-│   └── AuthController, BookController, ReservationController, AdminController
-├── service
-│   └── BookService, ReservationService, UserService
-├── repository
-│   └── BookRepository, UserRepository, ReservationRepository
-├── entity
-│   └── User, Book, Reservation
-├── config
-│   └── SecurityConfig, OAuth2UserService
-├── templates
-│   └── Thymeleaf HTML Pages
-└── static
-    └── css, js
-```
-
----
+Access the app at: [http://localhost:8080](http://localhost:8080)
 
 ## 📸 Screenshots
 
-> Add UI screenshots here (book list, reservation, admin dashboard, etc.)
+* ✅ OAuth GitHub login
+* 📚 Book list with pagination and search
+* 🧾 Reservation management
+* 🔐 Admin dashboard
+
+## 🧠 Notes
+
+* All cache-related services are annotated with `@Cacheable` and `@CacheEvict`
+* Role-based visibility and access are handled using Spring Security
+* All user data is managed based on GitHub OAuth profile
 
 ---
 
-## 📃 License
-
-This project is open source for academic and personal use only. Commercial use is not allowed without permission.
-
----
-
-## 🙌 Author
-
-- Name: [Your Name]
-- GitHub: [Your GitHub Profile]
+🔗 [Visit my portfolio](https://ahmadkadri978.github.io/portfolio)
