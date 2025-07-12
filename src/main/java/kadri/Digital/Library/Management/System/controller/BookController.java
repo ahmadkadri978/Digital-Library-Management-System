@@ -8,6 +8,7 @@ import kadri.Digital.Library.Management.System.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -95,11 +96,12 @@ public class BookController {
         model.addAttribute("totalPages", booksPage.getTotalPages());
         return "search-results";
     }
+
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal OAuth2User oAuth2User, Model model){
         if (oAuth2User == null) {
             model.addAttribute("error", "User is not authenticated.");
-            return "error"; // عرض صفحة خطأ مخصصة
+            return "error";
         }
 
         model.addAttribute("username", oAuth2User.getAttribute("login"));

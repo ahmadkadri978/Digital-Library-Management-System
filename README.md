@@ -38,6 +38,69 @@ src/
          ├── templates/
          └── application.properties
 ```
+## 📸 Screenshots
+
+Here are some UI snapshots of the Digital Library Management System:
+
+### 🏠 Home Page
+![Home Page](screenshots/Home-page.jpg)
+
+---
+
+### 📚 Books List Page (User)
+![Books Page](screenshots/books-page.jpg)
+
+---
+
+### 👤 Profile Page (OAuth GitHub Login)
+![Profile Page](screenshots/profile-page.jpg)
+
+---
+
+### 🔍 Search Books
+![Search Page](screenshots/search-page.jpg)
+
+---
+
+### 🧾 My Reservations (User)
+![User Reservations](screenshots/reservations-page.jpg)
+
+---
+
+### 🧾 Duplicated Reservations 
+![Duplicated Reservations](screenshots/duplicated-reservations-error.jpg)
+
+---
+
+---
+### 🧾 Reservations (Admin)
+![Admin Reservations Page](screenshots/reservations-admin-page.jpg)
+
+---
+
+### 📊 Admin - View All Books
+![Admin Books](screenshots/admin-books-page.jpg)
+
+---
+
+### ➕ Admin - Add Book
+![Admin Add Book](screenshots/admin-add-book-page.jpg)
+
+---
+
+### 📝 Admin - Edit Book
+![Admin Edit Book](screenshots/admin-edit-book-page.jpg)
+
+---
+
+### 👥 Admin - Manage Users
+![Admin Manage Users](screenshots/admin-Manage-users-page.jpg)
+
+---
+
+### 📋 Admin - Manage Reservations
+![Admin Reservations](screenshots/reservations-admin-page.jpg)
+
 
 ## 🚀 Getting Started
 

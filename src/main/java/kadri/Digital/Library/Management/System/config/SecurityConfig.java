@@ -24,19 +24,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.sameOrigin())
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives(
-                                        "default-src 'self'; " +
-                                                "script-src 'self' https://cdn.jsdelivr.net; " +
-                                                "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; " +
-                                                "img-src 'self' data:; " +
-                                                "font-src 'self' https://cdn.jsdelivr.net; " +
-                                                "connect-src 'self'; " +
-                                                "object-src 'none'; " +
-                                                "base-uri 'self'; " +
-                                                "form-action 'self'"
-                                )
+                                .policyDirectives("img-src 'self' https://avatars.githubusercontent.com;")
                         )
                 )
                 .authorizeHttpRequests(auth -> auth

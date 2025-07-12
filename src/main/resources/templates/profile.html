@@ -10,7 +10,11 @@
 <div class="container py-5">
     <div class="card shadow-sm mx-auto" style="max-width: 500px;">
         <div class="card-body text-center">
-            <img th:src="${avatar}" alt="User Avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px;">
+            <img th:if="${avatar != null}" th:src="${avatar}"
+                 alt="User Avatar"
+                 class="rounded-circle mb-3"
+                 style="width: 150px; height: 150px;">
+
             <h3 class="card-title text-primary">Welcome, <span th:text="${name}"></span></h3>
             <p class="mb-1">Username: <strong th:text="${username}"></strong></p>
             <p class="text-muted small">
