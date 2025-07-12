@@ -132,12 +132,6 @@ mvn spring-boot:run
 
 Access the app at: [http://localhost:8080](http://localhost:8080)
 
-## 📸 Screenshots
-
-* ✅ OAuth GitHub login
-* 📚 Book list with pagination and search
-* 🧾 Reservation management
-* 🔐 Admin dashboard
 
 ## 🧠 Notes
 
