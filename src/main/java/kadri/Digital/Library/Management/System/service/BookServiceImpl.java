@@ -21,6 +21,7 @@ public class BookServiceImpl implements BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
     @Autowired
     BookRepository bookRepository;
+
     @Override
     @CacheEvict(value = "books", allEntries = true)
     public Book saveBook(Book book) {
@@ -32,7 +33,7 @@ public class BookServiceImpl implements BookService {
     @Cacheable(value = "books", key = "#page + '-' + #size")
     public Page<Book> getAllBooks(int page, int size) {
         logger.debug("Fetching all books for page: {}, size: {}", page, size);
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findAll(pageable);
         logger.debug("Books fetched: {}", books.getContent());
         return books;
@@ -40,30 +41,30 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Cacheable(value = "booksByTitle", key = "#title + '-' + #page + '-' + #size")
-    public Page<Book> searchBooksByTitle(String title,int page, int size) {
-        Pageable pageable = PageRequest.of(page , size);
-        return bookRepository.findByTitleContainingIgnoreCase(title , pageable);
+    public Page<Book> searchBooksByTitle(String title, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
     }
 
     @Override
     @Cacheable(value = "booksByAuthor", key = "#author + '-' + #page + '-' + #size")
     public Page<Book> searchBooksByAuthor(String author, int page, int size) {
-        Pageable pageable  = PageRequest.of(page , size);
-        return bookRepository.findByAuthorContainingIgnoreCase(author , pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
     }
 
     @Override
     @Cacheable(value = "booksByIsbn", key = "#isbn + '-' + #page + '-' + #size")
     public Page<Book> searchBooksByIsbn(String isbn, int page, int size) {
-        Pageable pageable = PageRequest.of(page , size );
-        return bookRepository.findByIsbn(isbn , pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByIsbn(isbn, pageable);
     }
 
     @Override
     @Cacheable(value = "book", key = "#id")
     public Book getBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(()->new BookNotFoundException("Book with ID" + id + "not found."));
+                .orElseThrow(() -> new BookNotFoundException("Book with ID" + id + "not found."));
         return book;
 
     }
@@ -81,29 +82,29 @@ public class BookServiceImpl implements BookService {
     @Override
     @CacheEvict(value = "books", allEntries = true)
     public void deleteBook(Long id) {
-        if(!bookRepository.existsById(id)) {
+        if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException("Book with ID" + id + "not found.");
         }
         bookRepository.deleteById(id);
     }
 
-    @Override
-    public boolean isBookAvailableForReservation(Long bookId) {
-        Book book = getBookById(bookId);
-        return book.getCopiesAvailable() > 0 ;
-    }
+//    @Override
+//    public boolean isBookAvailableForReservation(Long bookId) {
+//        Book book = getBookById(bookId);
+//        return book.getCopiesAvailable() > 0 ;
+//    }
 
-    @Override
-    @CacheEvict(value = "books", allEntries = true)
-    public void updateBookReservationStatus(Long bookId, boolean reserved) {
-        Book book = getBookById(bookId);
-        if (reserved) {
-            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-        } else {
-            book.setCopiesAvailable(book.getCopiesAvailable() + 1);
-        }
-        bookRepository.save(book);
-
-    }
-
+//    @Override
+//    @CacheEvict(value = "books", allEntries = true)
+//    public void updateBookReservationStatus(Long bookId, boolean reserved) {
+//        Book book = getBookById(bookId);
+//        if (reserved) {
+//            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+//        } else {
+//            book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+//        }
+//        bookRepository.save(book);
+//
+//    }
 }
+

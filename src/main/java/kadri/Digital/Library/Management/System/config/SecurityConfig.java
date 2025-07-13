@@ -29,14 +29,11 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/index","/Digital Library/error", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/DigitalLibrary/books/**").authenticated()
-                        .requestMatchers("/DigitalLibrary/admin/**").authenticated()
-
-                        .requestMatchers("/DigitalLibrary/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/DigitalLibrary/books/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/DigitalLibrary/reservations/**").authenticated()
-                        .requestMatchers("/DigitalLibrary/profile").authenticated()
+                        .requestMatchers("/","/index","/error", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/Digital Library/books/**").authenticated()
+                        .requestMatchers("/Digital Library/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/Digital Library/reservations/**").hasRole("USER")
+                        .requestMatchers("/Digital Library/profile").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

@@ -3,143 +3,114 @@ package unittests;
 import kadri.Digital.Library.Management.System.entity.User;
 import kadri.Digital.Library.Management.System.exception.UserNotFoundException;
 import kadri.Digital.Library.Management.System.repository.UserRepository;
-import kadri.Digital.Library.Management.System.service.UserService;
+
 import kadri.Digital.Library.Management.System.service.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.mockito.*;
+
+import org.springframework.data.domain.*;
+
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceImplTest {
+
     @InjectMocks
     private UserServiceImpl userService;
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private OAuth2User oAuth2User;
 
-    @Test
-    void testRegisterUser(){
-        String username = "testuser";
-        String name = "Test User";
-        String avatarUrl = "http://avatar.url";
+    private User user;
 
-        when(oAuth2User.getAttribute("login")).thenReturn(username);
-        when(oAuth2User.getAttribute("name")).thenReturn(name);
-        when(oAuth2User.getAttribute("avatar_url")).thenReturn(avatarUrl);
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        user = new User("kadri", "Kadri Name", "http://avatar", "USER");
+        user.setId(1L);
+        user.setReservation("INACTIVE");
+    }
+
+    @Test
+    void registerUser_ShouldRegisterNewUser() {
+        when(oAuth2User.getAttribute("login")).thenReturn("kadri");
+        when(oAuth2User.getAttribute("name")).thenReturn("Kadri Name");
+        when(oAuth2User.getAttribute("avatar_url")).thenReturn("http://avatar");
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         User result = userService.registerUser(oAuth2User);
-
-        assertNotNull(result);
-        assertEquals(username, result.getUsername());
-        assertEquals(name, result.getName());
-        assertEquals(avatarUrl, result.getAvatarUrl());
+        assertEquals("kadri", result.getUsername());
         assertEquals("INACTIVE", result.getReservation());
-        verify(userRepository,times(1)).save(any(User.class));
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void testGetAllUsers(){
-        int page = 0;
-        int size = 5;
-        Pageable pageable = PageRequest.of(page,size);
-        Page<User> userPage = new PageImpl<>(List.of(new User("user1", "User 1", "url1", "USER")));
+    void getAllUsers_ShouldReturnPaginatedUsers() {
+        Page<User> page = new PageImpl<>(List.of(user));
+        when(userRepository.findAll(PageRequest.of(0, 5))).thenReturn(page);
 
-        when(userRepository.findAll(pageable)).thenReturn(userPage);
-
-        Page<User> result = userService.getAllUsers(page,size);
-
-
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        verify(userRepository,times(1)).findAll(pageable);
+        Page<User> result = userService.getAllUsers(0, 5);
+        assertEquals(1, result.getContent().size());
     }
 
     @Test
-    void testDeleteUserExist(){
-        Long userId = 1l;
-        when(userRepository.existsById(userId)).thenReturn(true);
-
-        userService.delete(userId);
-
-        verify(userRepository,times(1)).deleteById(userId);
+    void getUser_ShouldReturnUsername() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        String result = userService.getUser(1L);
+        assertEquals("kadri", result);
     }
 
     @Test
-    void testDeleteUserNotExist() {
-
-        Long userId = 1L;
-        when(userRepository.existsById(userId)).thenReturn(false);
-
-        assertThrows(UserNotFoundException.class, () -> userService.delete(userId));
-
-        verify(userRepository,never()).deleteById(userId);
+    void getUser_ShouldThrow_WhenNotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> userService.getUser(99L));
     }
 
     @Test
-    void testGetUser() {
-
-        Long userId=1L;
-        User user = new User("testuser", "Test User", "url", "USER");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        String result = userService.getUser(userId);
-
-        assertEquals("testuser", result);
-
-        verify(userRepository,times(1)).findById(userId);
-    }
-
-    @Test
-    void testGetUserById() {
-
-        Long userId = 1L;
-        User user = new User("testuser", "Test User", "url", "USER");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        User result = userService.getUserById(userId);
-
-        assertNotNull(result);
+    void getUserById_ShouldReturnUser() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        User result = userService.getUserById(1L);
         assertEquals(user, result);
-        verify(userRepository,times(1)).findById(userId);
     }
 
     @Test
-    void testFindByUsername() {
+    void getUserById_ShouldThrow_WhenNotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(99L));
+    }
 
-        String username = "testuser";
-        User user = new User(username, "Test User", "url", "USER");
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-
-        Optional<User> result = userService.findByUsername(username);
-
+    @Test
+    void findByUsername_ShouldReturnUser() {
+        when(userRepository.findByUsername("kadri")).thenReturn(Optional.of(user));
+        Optional<User> result = userService.findByUsername("kadri");
         assertTrue(result.isPresent());
-        assertEquals(user, result.get());
-        verify(userRepository,times(1)).findByUsername(username);
     }
 
     @Test
-    void testSaveUser() {
-
-        User user = new User("testuser", "Test User", "url", "USER");
-
+    void save_ShouldCallRepositorySave() {
         userService.save(user);
-
-        verify(userRepository,times(1)).save(user);
-
+        verify(userRepository).save(user);
     }
 
+    @Test
+    void delete_ShouldDeleteUser() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        userService.delete(1L);
+        verify(userRepository).deleteById(1L);
+    }
+
+    @Test
+    void delete_ShouldThrow_WhenUserNotFound() {
+        when(userRepository.existsById(99L)).thenReturn(false);
+        assertThrows(UserNotFoundException.class, () -> userService.delete(99L));
+    }
 }

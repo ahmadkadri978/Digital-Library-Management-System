@@ -10,6 +10,7 @@ A modern Spring Boot application for managing a digital library. The system supp
 * **Spring Data JPA** with **MySQL**
 * **Redis Cache**
 * **Bootstrap 5** for UI styling
+* **Docker & Docker Compose**
 
 ## 🌟 Features
 
@@ -38,6 +39,7 @@ src/
          ├── templates/
          └── application.properties
 ```
+
 ## 📸 Screenshots
 
 Here are some UI snapshots of the Digital Library Management System:
@@ -45,62 +47,40 @@ Here are some UI snapshots of the Digital Library Management System:
 ### 🏠 Home Page
 ![Home Page](screenshots/Home-page.jpg)
 
----
-
 ### 📚 Books List Page (User)
 ![Books Page](screenshots/books-page.jpg)
-
----
 
 ### 👤 Profile Page (OAuth GitHub Login)
 ![Profile Page](screenshots/profile-page.jpg)
 
----
-
 ### 🔍 Search Books
 ![Search Page](screenshots/search-page.jpg)
-
----
 
 ### 🧾 My Reservations (User)
 ![User Reservations](screenshots/reservations-page.jpg)
 
----
-
 ### 🧾 Duplicated Reservations 
 ![Duplicated Reservations](screenshots/duplicated-reservations-error.jpg)
 
----
-
----
 ### 🧾 Reservations (Admin)
 ![Admin Reservations Page](screenshots/reservations-admin-page.jpg)
-
----
 
 ### 📊 Admin - View All Books
 ![Admin Books](screenshots/admin-books-page.jpg)
 
----
-
 ### ➕ Admin - Add Book
 ![Admin Add Book](screenshots/admin-add-book-page.jpg)
-
----
 
 ### 📝 Admin - Edit Book
 ![Admin Edit Book](screenshots/admin-edit-book-page.jpg)
 
----
-
 ### 👥 Admin - Manage Users
 ![Admin Manage Users](screenshots/admin-Manage-users-page.jpg)
-
----
 
 ### 📋 Admin - Manage Reservations
 ![Admin Reservations](screenshots/reservations-admin-page.jpg)
 
+---
 
 ## 🚀 Getting Started
 
@@ -108,42 +88,57 @@ Here are some UI snapshots of the Digital Library Management System:
 
 ```bash
 git clone https://github.com/ahmadkadri978/Digital-Library-Management-System.git
+cd Digital-Library-Management-System
 ```
 
-### 2. Set up your database
+### 2. Setup MySQL and Redis (via Docker Compose)
 
-Create a MySQL database named `digital_library` and update credentials in `application.properties`.
+No need to install MySQL or Redis manually. Just run:
 
-### 3. Redis Setup (Optional but recommended)
+```bash
+./mvnw clean package -DskipTests
+docker compose up --build
+```
 
-Ensure Redis server is running locally on default port `6379`. The application uses Redis for caching.
+This will start:
+- MySQL (with database `library`, user `appuser`, password `apppass`)
+- Redis (on port 6379)
+- Spring Boot app (accessible at [http://localhost:8080](http://localhost:8080))
 
-### 4. Configure GitHub OAuth2
+### 3. Configure GitHub OAuth2
 
 Register an app on GitHub Developer Settings and set your `client-id` and `client-secret` in `application.properties`.
 
 > Alternatively, use the included `application-sample.properties` as a reference to create your own secure config file.
 
-### 5. Run the application
+---
 
-```bash
-mvn spring-boot:run
+## ⚙️ application.properties (example)
+
+```properties
+# DATABASE (configured via Docker Compose)
+spring.datasource.url=jdbc:mysql://mysql:3306/library
+spring.datasource.username=appuser
+spring.datasource.password=apppass
+spring.jpa.hibernate.ddl-auto=update
+
+# REDIS
+spring.data.redis.host=redis
+spring.data.redis.port=6379
+spring.cache.type=redis
+
+# Optional: Show SQL
+spring.jpa.show-sql=true
 ```
 
-Access the app at: [http://localhost:8080](http://localhost:8080)
-
-## 📸 Screenshots
-
-* ✅ OAuth GitHub login
-* 📚 Book list with pagination and search
-* 🧾 Reservation management
-* 🔐 Admin dashboard
+---
 
 ## 🧠 Notes
 
 * All cache-related services are annotated with `@Cacheable` and `@CacheEvict`
 * Role-based visibility and access are handled using Spring Security
 * All user data is managed based on GitHub OAuth profile
+* Thymeleaf templates adjust UI based on user role (Admin/User)
 
 ---
 

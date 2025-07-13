@@ -16,7 +16,7 @@ public interface BookService {
 
     void deleteBook(Long id);
 
-    boolean isBookAvailableForReservation(Long bookId);
-    void updateBookReservationStatus(Long bookId, boolean reserved);
+//    boolean isBookAvailableForReservation(Long bookId);
+//    void updateBookReservationStatus(Long bookId, boolean reserved);
 
 }
