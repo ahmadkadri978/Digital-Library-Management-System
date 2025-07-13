@@ -131,7 +131,8 @@ spring.cache.type=redis
 spring.jpa.show-sql=true
 ```
 
----
+Access the app at: [http://localhost:8080](http://localhost:8080)
+
 
 ## 🧠 Notes
 
