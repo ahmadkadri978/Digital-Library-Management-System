@@ -39,6 +39,31 @@ src/
          ├── templates/
          └── application.properties
 ```
+### 🧪 Live Demo Access
+
+You can test the application online here:  
+👉 [Live App](https://gentle-exploration-production.up.railway.app)
+
+#### 👤 Normal User Access
+Anyone can log in using **GitHub OAuth**.  
+By default, your role will be: `USER`
+
+You can:
+- Browse books
+- Make reservations
+- View your reserved books
+
+#### 🛡️ Admin Access
+To test the **Admin dashboard** (manage books, users, reservations):  
+📩 Please send me your GitHub username via email to request admin access.
+
+📧 **Email:** `ahmadkadri@web.de`
+
+Once I grant access, you’ll be able to:
+- Add / edit / delete books
+- Manage users & reservations
+
+  ```
 
 ## 📸 Screenshots
 
