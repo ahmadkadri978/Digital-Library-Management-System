@@ -70,14 +70,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @CacheEvict(value = "book", key = "#id")
-    public void updateBook(Long id, Book book) {
-        Book existingBook = getBookById(id);
-        existingBook.setTitle(book.getTitle());
-        existingBook.setAuthor(book.getAuthor());
-        existingBook.setDescription(book.getDescription());
-        bookRepository.save(existingBook);
-    }
+@Caching(evict = {
+    @CacheEvict(value = "book", key = "#id"),
+    @CacheEvict(value = "books", allEntries = true)
+})
+public void updateBook(Long id, Book book) {
+    Book existingBook = getBookById(id);
+    existingBook.setTitle(book.getTitle());
+    existingBook.setAuthor(book.getAuthor());
+    existingBook.setDescription(book.getDescription());
+    bookRepository.save(existingBook);
+}
 
     @Override
     @CacheEvict(value = "books", allEntries = true)
