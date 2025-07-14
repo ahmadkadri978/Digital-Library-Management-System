@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Cacheable(value = "users", key = "#page + '-' + #size")
     public Page<User> getAllUsers(int page, int size) {
-        logger.debug("Fetching users for page: {}, size: {}", page, size);
+        logger.debug("Fetching users for page: {}, size : {}", page, size);
 
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAll(pageable);

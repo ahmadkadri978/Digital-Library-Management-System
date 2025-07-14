@@ -78,7 +78,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @CacheEvict(value = "reservations", allEntries = true)
     public void cancelReservation(Long reservationId) {
-        logger.debug("Canceling reservation with ID: {}", reservationId);
+        logger.debug("Canceling reservation with ID : {}", reservationId);
 
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation with ID " + reservationId + " not found."));

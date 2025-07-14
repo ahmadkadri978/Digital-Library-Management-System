@@ -135,7 +135,7 @@ public class BookController {
         logger.debug("Extracting user from principal with username: {}", username);
         Optional<User> user = userService.findByUsername(username);
         return user.orElseThrow(() -> {
-            logger.error("User not found with username: {}", username);
+            logger.error("User not found with username : {}", username);
             return new UserNotFoundException("User not found with username: " + username);
         });
     }

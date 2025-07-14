@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Cacheable(value = "booksByTitle", key = "#title + '-' + #page + '-' + #size")
     public Page<Book> searchBooksByTitle(String title, int page, int size) {
-        logger.info("Searching books by title: '{}'", title);
+        logger.info("Searching books by title : '{}'", title);
         Pageable pageable = PageRequest.of(page, size);
         return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
     }

@@ -39,7 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         logger.debug("OAuth2 user attributes: {}", attributes);
 
         String username = oAuth2User.getAttribute("login");
-        logger.debug("Extracted username from OAuth2: {}", username);
+        logger.debug("Extracted username from OAuth2 : {}", username);
 
         User user = userService.findByUsername(username)
                 .orElseGet(() -> {
