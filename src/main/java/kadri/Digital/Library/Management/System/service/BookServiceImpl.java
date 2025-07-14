@@ -80,6 +80,7 @@ public void updateBook(Long id, Book book) {
     existingBook.setTitle(book.getTitle());
     existingBook.setAuthor(book.getAuthor());
     existingBook.setDescription(book.getDescription());
+    existingBook.setCopiesAvailable(book.getCopiesAvailable());
     bookRepository.save(existingBook);
 }
 
