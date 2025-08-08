@@ -23,22 +23,7 @@ A modern Spring Boot application for managing a digital library. The system supp
 * Dynamic book availability (copies increase/decrease with reservation status)
 * Session-based access control
 
-## 📁 Project Structure
-
-```
-src/
- └── main/
-     ├── java/kadri/Digital/Library/Management/System/
-     │   ├── controller/
-     │   ├── entity/
-     │   ├── repository/
-     │   ├── service/
-     │   ├── config/
-     │   └── DigitalLibraryManagementSystemApplication.java
-     └── resources/
-         ├── templates/
-         └── application.properties
-```
+---
 ## 🧪 Live Demo Status
 
 ![Demo](https://img.shields.io/badge/Demo-Offline-red?style=flat-square)  
