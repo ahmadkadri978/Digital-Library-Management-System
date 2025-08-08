@@ -16,7 +16,7 @@ services:
       MYSQL_USER: appuser
       MYSQL_PASSWORD: apppass
     ports:
-      - "3307:3306"
+      - "3306:3306"
 
   app:
     build: .
