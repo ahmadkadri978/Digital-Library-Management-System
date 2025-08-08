@@ -39,31 +39,43 @@ src/
          ├── templates/
          └── application.properties
 ```
-### 🧪 Live Demo Access
+## 🧪 Live Demo Status
 
-You can test the application online here:  
-👉 [Live App](https://gentle-exploration-production.up.railway.app)
+![Demo](https://img.shields.io/badge/Demo-Offline-red?style=flat-square)  
+🚫 **Live demo is currently unavailable** due to hosting limitations.  
+🛠 You can still run the project locally using Docker Compose.
 
-#### 👤 Normal User Access
-Anyone can log in using **GitHub OAuth**.  
-By default, your role will be: `USER`
+---
 
-You can:
-- Browse books
-- Make reservations
-- View your reserved books
+## 🚀 Getting Started (Local Setup)
 
-#### 🛡️ Admin Access
-To test the **Admin dashboard** (manage books, users, reservations):  
-📩 Please send me your GitHub username via email to request admin access.
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/ahmadkadri978/Digital-Library-Management-System.git
+cd Digital-Library-Management-System
+```
 
-📧 **Email:** `ahmadkadri@web.de`
+### 2️⃣ Build and run with Docker Compose
+No need to install MySQL or Redis manually. Just run:
+```bash
+./mvnw clean package -DskipTests
+docker compose up --build
+```
 
-Once I grant access, you’ll be able to:
-- Add / edit / delete books
-- Manage users & reservations
+This will start:
+- **MySQL** (database: `library`, user: `appuser`, password: `apppass`)
+- **Redis** (port 6379)
+- **Spring Boot app** at [http://localhost:8080](http://localhost:8080)
 
-  ```
+### 3️⃣ Configure GitHub OAuth2
+1. Register an app at [GitHub Developer Settings](https://github.com/settings/developers)  
+2. Set the **Authorization callback URL** to:
+   ```
+   http://localhost:8080/login/oauth2/code/github
+   ```
+3. Put your `client-id` and `client-secret` in `application.properties`.
+
+---
 
 ## 📸 Screenshots
 
@@ -106,58 +118,26 @@ Here are some UI snapshots of the Digital Library Management System:
 ![Admin Reservations](screenshots/reservations-admin-page.jpg)
 
 ---
-
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/ahmadkadri978/Digital-Library-Management-System.git
-cd Digital-Library-Management-System
-```
-
-### 2. Setup MySQL and Redis (via Docker Compose)
-
-No need to install MySQL or Redis manually. Just run:
-
-```bash
-./mvnw clean package -DskipTests
-docker compose up --build
-```
-
-This will start:
-- MySQL (with database `library`, user `appuser`, password `apppass`)
-- Redis (on port 6379)
-- Spring Boot app (accessible at [http://localhost:8080](http://localhost:8080))
-
-### 3. Configure GitHub OAuth2
-
-Register an app on GitHub Developer Settings and set your `client-id` and `client-secret` in `application.properties`.
-
-> Alternatively, use the included `application-sample.properties` as a reference to create your own secure config file.
-
----
-
-## ⚙️ application.properties (example)
-
+## ⚙️ Example `application.properties` (Local)
 ```properties
-# DATABASE (configured via Docker Compose)
 spring.datasource.url=jdbc:mysql://mysql:3306/library
 spring.datasource.username=appuser
 spring.datasource.password=apppass
-spring.jpa.hibernate.ddl-auto=update
 
-# REDIS
 spring.data.redis.host=redis
 spring.data.redis.port=6379
 spring.cache.type=redis
 
-# Optional: Show SQL
+spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+
+spring.security.oauth2.client.registration.github.client-id=your_client_id
+spring.security.oauth2.client.registration.github.client-secret=your_client_secret
+spring.security.oauth2.client.registration.github.redirect-uri=http://localhost:8080/login/oauth2/code/github
+spring.security.oauth2.client.registration.github.scope=user:email
 ```
 
-Access the app at: [http://localhost:8080](http://localhost:8080)
-
+---
 
 ## 🧠 Notes
 
