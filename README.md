@@ -2,7 +2,7 @@
 
 A modern Spring Boot application for managing a digital library. The system supports book management, user reservations, GitHub login authentication, and utilizes Redis caching for enhanced performance.
 
-## 🔧 Technologies Used
+## Technologies Used
 
 * **Spring Boot 3**
 * **Thymeleaf** (template engine)
@@ -12,7 +12,7 @@ A modern Spring Boot application for managing a digital library. The system supp
 * **Bootstrap 5** for UI styling
 * **Docker & Docker Compose**
 
-## 🌟 Features
+## Features
 
 * Login with GitHub (OAuth2)
 * Role-based access: Admin / User
@@ -24,23 +24,23 @@ A modern Spring Boot application for managing a digital library. The system supp
 * Session-based access control
 
 ---
-## 🧪 Live Demo Status
+## Live Demo Status
 
 ![Demo](https://img.shields.io/badge/Demo-Offline-red?style=flat-square)  
-🚫 **Live demo is currently unavailable** due to hosting limitations.  
-🛠 You can still run the project locally using Docker Compose.
+ **Live demo is currently unavailable** due to hosting limitations.  
+ You can still run the project locally using Docker Compose.
 
 ---
 
-## 🚀 Getting Started (Local Setup)
+## Getting Started (Local Setup)
 
-### 1️⃣ Clone the repository
+### 1 Clone the repository
 ```bash
 git clone https://github.com/ahmadkadri978/Digital-Library-Management-System.git
 cd Digital-Library-Management-System
 ```
 
-### 2️⃣ Build and run with Docker Compose
+### 2 Build and run with Docker Compose
 No need to install MySQL or Redis manually. Just run:
 ```bash
 ./mvnw clean package -DskipTests
@@ -52,7 +52,7 @@ This will start:
 - **Redis** (port 6379)
 - **Spring Boot app** at [http://localhost:8080](http://localhost:8080)
 
-### 3️⃣ Configure GitHub OAuth2
+### 3 Configure GitHub OAuth2
 1. Register an app at [GitHub Developer Settings](https://github.com/settings/developers)  
 2. Set the **Authorization callback URL** to:
    ```
@@ -62,48 +62,48 @@ This will start:
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 Here are some UI snapshots of the Digital Library Management System:
 
-### 🏠 Home Page
+### Home Page
 ![Home Page](screenshots/Home-page.jpg)
 
-### 📚 Books List Page (User)
+### Books List Page (User)
 ![Books Page](screenshots/books-page.jpg)
 
-### 👤 Profile Page (OAuth GitHub Login)
+### Profile Page (OAuth GitHub Login)
 ![Profile Page](screenshots/profile-page.jpg)
 
-### 🔍 Search Books
+### Search Books
 ![Search Page](screenshots/search-page.jpg)
 
-### 🧾 My Reservations (User)
+### My Reservations (User)
 ![User Reservations](screenshots/reservations-page.jpg)
 
-### 🧾 Duplicated Reservations 
+### Duplicated Reservations 
 ![Duplicated Reservations](screenshots/duplicated-reservations-error.jpg)
 
-### 🧾 Reservations (Admin)
+### Reservations (Admin)
 ![Admin Reservations Page](screenshots/reservations-admin-page.jpg)
 
-### 📊 Admin - View All Books
+### Admin - View All Books
 ![Admin Books](screenshots/admin-books-page.jpg)
 
-### ➕ Admin - Add Book
+### Admin - Add Book
 ![Admin Add Book](screenshots/admin-add-book-page.jpg)
 
-### 📝 Admin - Edit Book
+### Admin - Edit Book
 ![Admin Edit Book](screenshots/admin-edit-book-page.jpg)
 
-### 👥 Admin - Manage Users
+### Admin - Manage Users
 ![Admin Manage Users](screenshots/admin-Manage-users-page.jpg)
 
-### 📋 Admin - Manage Reservations
+### Admin - Manage Reservations
 ![Admin Reservations](screenshots/reservations-admin-page.jpg)
 
 ---
-## ⚙️ Example `application.properties` (Local)
+## Example `application.properties` (Local)
 ```properties
 spring.datasource.url=jdbc:mysql://mysql:3306/library
 spring.datasource.username=appuser
@@ -124,7 +124,7 @@ spring.security.oauth2.client.registration.github.scope=user:email
 
 ---
 
-## 🧠 Notes
+## Notes
 
 * All cache-related services are annotated with `@Cacheable` and `@CacheEvict`
 * Role-based visibility and access are handled using Spring Security
@@ -133,4 +133,4 @@ spring.security.oauth2.client.registration.github.scope=user:email
 
 ---
 
-🔗 [Visit my portfolio](https://ahmadkadri978.github.io/portfolio)
+ [Visit my portfolio](https://ahmadkadri978.github.io/portfolio)
