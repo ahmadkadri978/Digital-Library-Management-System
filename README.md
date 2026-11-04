@@ -41,14 +41,19 @@ cd Digital-Library-Management-System
 ```
 
 ### 2 Build and run with Docker Compose
-No need to install MySQL or Redis manually. Just run:
+No need to install MySQL or Redis manually. Create a local environment file first:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set strong, unique MySQL passwords and your GitHub OAuth app credentials. **Never commit `.env`.** Then run:
 ```bash
 ./mvnw clean package -DskipTests
 docker compose up --build
 ```
 
 This will start:
-- **MySQL** (database: `library`, user: `appuser`, password: `apppass`)
+- **MySQL** (database: `library`; credentials loaded from your local `.env` file)
 - **Redis** (port 6379)
 - **Spring Boot app** at [http://localhost:8080](http://localhost:8080)
 
@@ -58,7 +63,9 @@ This will start:
    ```
    http://localhost:8080/login/oauth2/code/github
    ```
-3. Put your `client-id` and `client-secret` in `application.properties`.
+3. Set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in your local `.env` file (not in `application.properties`).
+
+> **Security:** The repository uses environment variables for MySQL and GitHub OAuth credentials. `.env.example` contains placeholders only. Do not commit `.env`, reuse the old example passwords, or deploy with development credentials. If any previously committed credential was used outside local development, rotate it; updating files does not remove it from Git history.
 
 ---
 
